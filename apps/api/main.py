@@ -38,20 +38,31 @@ app.add_middleware(
 # Initialize seed data on startup
 @app.on_event("startup")
 def startup_event():
-    benchmark_payload = {
-        "publication": "News24 South Africa",
-        "headline": "Rustenburg Community Blockades Karee Platinum Mine Access Road Demanding Jobs",
-        "content": (
-            "Protesters from the Rustenburg Community Action Forum have blocked main transport routes "
-            "leading to AngloGold Ashanti Karee Platinum Mine operations today. Community leaders stated that "
-            "local employment agreements negotiated last year remain unfulfilled. Local police and Rustenburg "
-            "Local Municipality representatives are on-site monitoring the situation as morning shift transport was delayed."
-        ),
-        "source_url": "https://www.news24.com/articles/rustenburg-mine-blockade-2026",
-        "country_code": "ZA"
-    }
-    obs = ingestion_service_instance.ingest_vectanews_article(benchmark_payload)
-    situation_service_instance.process_observation_to_situation(obs["id"])
+    # Attempt to fetch live real news on startup
+    try:
+        articles = vectanews_scraper_instance.crawl_outlet("src-sa-news24", limit=2)
+        if articles:
+            for article in articles:
+                obs = ingestion_service_instance.ingest_vectanews_article(article)
+                situation_service_instance.process_observation_to_situation(obs["id"])
+        else:
+            # Fallback if offline
+            raise Exception("No articles found")
+    except Exception as e:
+        # Fallback to benchmark payload if scraping fails
+        benchmark_payload = {
+            "publication": "News24 South Africa",
+            "headline": "Rustenburg Community Blockades Karee Platinum Mine Access Road Demanding Jobs",
+            "content": (
+                "Protesters from the Rustenburg Community Action Forum have blocked main transport routes "
+                "leading to AngloGold Ashanti Karee Platinum Mine operations today. Community leaders stated that "
+                "local employment agreements negotiated last year remain unfulfilled."
+            ),
+            "source_url": "https://www.news24.com/articles/rustenburg-mine-blockade-2026",
+            "country_code": "ZA"
+        }
+        obs = ingestion_service_instance.ingest_vectanews_article(benchmark_payload)
+        situation_service_instance.process_observation_to_situation(obs["id"])
 
     # Seed radio streams
     radio_pipeline_instance.trigger_station_stream_capture("Ukhozi FM")
