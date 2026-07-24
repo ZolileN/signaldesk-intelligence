@@ -29,21 +29,28 @@ class SituationEngineService:
 
         import os
         import json
-        from openai import OpenAI
+        from google import genai
+        from google.genai import types
         
-        api_key = os.environ.get("OPENAI_API_KEY")
+        api_key = os.environ.get("GEMINI_API_KEY")
         if api_key and len(content) > 50:
             try:
-                client = OpenAI(api_key=api_key)
-                response = client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                        {"role": "system", "content": "You are an African geopolitical Situation Intelligence engine. Read the news observation and extract the core situation as JSON. Output JSON only. The JSON must match this structure: {\"title\": \"Short descriptive title\", \"summary\": \"2-3 sentence summary\", \"situation_type\": \"POLITICAL_UNREST, COMMUNITY_CONFLICT, ECONOMIC_POLICY, etc\", \"drivers\": [{\"category\": \"IMMEDIATE_TRIGGER\", \"description\": \"...\"}], \"potential_outcomes\": [{\"scenario\": \"...\", \"likelihood\": \"HIGH\", \"timeframe\": \"24_HOURS\"}]}"},
-                        {"role": "user", "content": f"Headline: {headline}\n\nContent: {content}"}
-                    ],
-                    response_format={"type": "json_object"}
+                client = genai.Client(api_key=api_key)
+                
+                system_instruction = "You are an African geopolitical Situation Intelligence engine. Read the news observation and extract the core situation as JSON. The JSON must match this structure: {\"title\": \"Short descriptive title\", \"summary\": \"2-3 sentence summary\", \"situation_type\": \"POLITICAL_UNREST, COMMUNITY_CONFLICT, ECONOMIC_POLICY, etc\", \"drivers\": [{\"category\": \"IMMEDIATE_TRIGGER\", \"description\": \"...\"}], \"potential_outcomes\": [{\"scenario\": \"...\", \"likelihood\": \"HIGH\", \"timeframe\": \"24_HOURS\"}]}"
+                
+                prompt = f"Headline: {headline}\n\nContent: {content}"
+                
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_instruction,
+                        response_mime_type="application/json"
+                    )
                 )
-                llm_result = json.loads(response.choices[0].message.content)
+                
+                llm_result = json.loads(response.text)
                 title = llm_result.get("title", headline)
                 summary = llm_result.get("summary", content[:200])
                 drivers = llm_result.get("drivers", [{"category": "IMMEDIATE_TRIGGER", "description": "Triggered by breaking news report."}])
