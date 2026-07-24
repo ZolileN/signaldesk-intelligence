@@ -2,6 +2,10 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any, List, Optional
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from packages.database import db_instance
 from services.ingestion.ingestion_service import ingestion_service_instance
