@@ -103,6 +103,21 @@ def ingest_government_notice(payload: Dict[str, Any]):
 def list_media_outlets():
     return vectanews_scraper_instance.get_outlet_distribution()
 
+@app.post("/api/v1/news/outlets/{outlet_id}/crawl")
+def crawl_and_ingest_outlet(outlet_id: str):
+    articles = vectanews_scraper_instance.crawl_outlet(outlet_id, limit=3)
+    results = []
+    for article in articles:
+        obs = ingestion_service_instance.ingest_vectanews_article(article)
+        sit = situation_service_instance.process_observation_to_situation(obs["id"])
+        results.append({
+            "observation_id": obs["id"],
+            "headline": article["headline"],
+            "situation_id": sit["id"] if sit else None
+        })
+    return {"status": "SUCCESS", "crawled": len(results), "results": results}
+
+
 @app.post("/api/v1/search/vector")
 def vector_search_situations(payload: Dict[str, Any]):
     query = payload.get("query", "mining community protest disruption")

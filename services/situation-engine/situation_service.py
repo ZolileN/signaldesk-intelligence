@@ -20,9 +20,47 @@ class SituationEngineService:
         self.db = db
 
     def process_observation_to_situation(self, obs_id: str) -> Dict[str, Any]:
+        obs = self.db.observations.get(obs_id)
+        if not obs:
+            return {}
+
+        content = obs.get("content", "")
+        headline = obs.get("headline", "")
+
+        import os
+        import json
+        from openai import OpenAI
+        
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if api_key and len(content) > 50:
+            try:
+                client = OpenAI(api_key=api_key)
+                response = client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[
+                        {"role": "system", "content": "You are an African geopolitical Situation Intelligence engine. Read the news observation and extract the core situation as JSON. Output JSON only. The JSON must match this structure: {\"title\": \"Short descriptive title\", \"summary\": \"2-3 sentence summary\", \"situation_type\": \"POLITICAL_UNREST, COMMUNITY_CONFLICT, ECONOMIC_POLICY, etc\", \"drivers\": [{\"category\": \"IMMEDIATE_TRIGGER\", \"description\": \"...\"}], \"potential_outcomes\": [{\"scenario\": \"...\", \"likelihood\": \"HIGH\", \"timeframe\": \"24_HOURS\"}]}"},
+                        {"role": "user", "content": f"Headline: {headline}\n\nContent: {content}"}
+                    ],
+                    response_format={"type": "json_object"}
+                )
+                llm_result = json.loads(response.choices[0].message.content)
+                title = llm_result.get("title", headline)
+                summary = llm_result.get("summary", content[:200])
+                drivers = llm_result.get("drivers", [{"category": "IMMEDIATE_TRIGGER", "description": "Triggered by breaking news report."}])
+                outcomes = llm_result.get("potential_outcomes", [{"scenario": "Ongoing monitoring required.", "likelihood": "HIGH", "timeframe": "24_HOURS"}])
+            except Exception as e:
+                title = headline or "Generated Situation"
+                summary = content[:200]
+                drivers = [{"category": "IMMEDIATE_TRIGGER", "description": "Triggered by breaking news report."}]
+                outcomes = [{"scenario": "Ongoing monitoring required.", "likelihood": "HIGH", "timeframe": "24_HOURS"}]
+        else:
+            title = headline or "Generated Situation"
+            summary = content[:200]
+            drivers = [{"category": "IMMEDIATE_TRIGGER", "description": "Triggered by breaking news report."}]
+            outcomes = [{"scenario": "Ongoing monitoring required.", "likelihood": "HIGH", "timeframe": "24_HOURS"}]
+
         entities = entity_service_instance.extract_and_resolve_entities(obs_id)
         claims = entity_service_instance.extract_claims(obs_id)
-
         events = event_service_instance.detect_events_from_observation(obs_id, entities)
 
         evt_ids = [e["id"] for e in events]
@@ -36,11 +74,8 @@ class SituationEngineService:
             entity_roles.append({"entity_id": ent["id"], "role": role, "influence_score": 0.85})
 
         situation_record = self.db.create_or_update_situation({
-            "title": "Community-Mining Conflict & Operations Disruption in Rustenburg",
-            "summary": (
-                "Escalating tensions between Rustenburg Community Action Forum and platinum mining operators "
-                "concerning local employment commitments and road access blockades."
-            ),
+            "title": title,
+            "summary": summary,
             "situation_type": SituationType.COMMUNITY_CONFLICT.value,
             "status": SituationStatus.ESCALATING.value,
             "trajectory": TrajectoryDirection.ESCALATING.value,
@@ -48,16 +83,8 @@ class SituationEngineService:
             "confidence_score": 0.91,
             "event_ids": evt_ids,
             "entity_roles": entity_roles,
-            "drivers": [
-                {"category": "IMMEDIATE_TRIGGER", "description": "Blockade of Karee Mine access road by local youth."},
-                {"category": "STRUCTURAL_DRIVER", "description": "High regional youth unemployment in North West Province."},
-                {"category": "ECONOMIC_DRIVER", "description": "Demands for local procurement and supplier inclusion."}
-            ],
-            "potential_outcomes": [
-                {"scenario": "OPERATIONAL_HALT", "likelihood": "HIGH", "timeframe": "24_HOURS"},
-                {"scenario": "MUNICIPAL_MEDIATION", "likelihood": "MEDIUM", "timeframe": "48_HOURS"},
-                {"scenario": "SECURITY_INTERVENTION", "likelihood": "LOW", "timeframe": "72_HOURS"}
-            ]
+            "drivers": drivers,
+            "potential_outcomes": outcomes
         })
 
         sit_id = situation_record["id"]

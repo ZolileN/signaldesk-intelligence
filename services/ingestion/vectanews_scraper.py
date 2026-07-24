@@ -11,7 +11,7 @@ AFRICAN_MEDIA_OUTLETS = [
         "country_code": "ZA",
         "country_name": "South Africa",
         "category": "NATIONAL_NEWS",
-        "rss_feed_url": "https://www.news24.com/news24/rss",
+        "rss_feed_url": "https://feeds.news24.com/articles/news24/TopStories/rss",
         "reliability_score": 0.95,
         "is_south_african": True
     },
@@ -191,18 +191,30 @@ class VectaNewsScraperEngine:
             "outlets": self.outlets
         }
 
-    def simulate_crawl_outlet(self, outlet_id: str) -> List[Dict[str, Any]]:
-        outlet = next((o for o in self.outlets if o["id"] == outlet_id), self.outlets[0])
+    def crawl_outlet(self, outlet_id: str, limit: int = 5) -> List[Dict[str, Any]]:
+        import feedparser
+        from bs4 import BeautifulSoup
+
+        outlet = next((o for o in self.outlets if o["id"] == outlet_id), None)
+        if not outlet:
+            return []
         
-        crawled_articles = [
-            {
+        feed = feedparser.parse(outlet['rss_feed_url'])
+        crawled_articles = []
+        
+        for entry in feed.entries[:limit]:
+            # Strip HTML from content using BeautifulSoup
+            raw_content = entry.get('description', '') or entry.get('summary', '')
+            clean_content = BeautifulSoup(raw_content, "html.parser").get_text(separator=' ', strip=True) if raw_content else entry.get('title', '')
+            
+            crawled_articles.append({
                 "publication": outlet["name"],
-                "headline": f"Operational & Policy Updates from {outlet['country_name']} Corridor",
-                "content": f"New development reported in {outlet['country_name']}. Community and industrial stakeholders meet regarding regional economic agreements.",
-                "source_url": f"{outlet['rss_feed_url']}/item-{datetime.now().strftime('%Y%m%d%H%M')}",
+                "headline": entry.get('title', 'Unknown Headline'),
+                "content": clean_content,
+                "source_url": entry.get('link', f"{outlet['rss_feed_url']}/unknown"),
                 "country_code": outlet["country_code"]
-            }
-        ]
+            })
+            
         return crawled_articles
 
 vectanews_scraper_instance = VectaNewsScraperEngine()
