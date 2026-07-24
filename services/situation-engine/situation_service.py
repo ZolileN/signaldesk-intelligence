@@ -24,8 +24,8 @@ class SituationEngineService:
         if not obs:
             return {}
 
-        content = obs.get("content", "")
-        headline = obs.get("headline", "")
+        content = obs.get("raw_content", "") or obs.get("content", "")
+        headline = obs.get("title", "") or obs.get("headline", "")
 
         import os
         import json
