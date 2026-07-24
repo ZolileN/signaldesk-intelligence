@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: signaldesk-postgres
+    environment:
+      POSTGRES_DB: signaldesk_db
+      POSTGRES_USER: signaldesk
+      POSTGRES_PASSWORD: signaldesk_secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../migrations:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:

@@ -1,0 +1,1578 @@
+
+SIGNALDESK
+Business Plan 2026–2030
+Africa-First Situational Intelligence Infrastructure
+Product Family: SignalDesk | Vecta News | Qisimah Audio InsightsHeadquarters: South AfricaInitial Market: South Africa → Sub-Saharan Africa → Global Africa-facing organisationsBusiness Model: B2B SaaS + Enterprise Intelligence + Data/APIStage: Pre-commercial / Product formationVersion: 1.0Date: July 2026
+
+Executive Summary
+SignalDesk is an Africa-first situational intelligence platform designed to help organisations understand what is changing in the world, how situations are developing, how they are exposed, and what they should do next.
+The platform ingests information from:
+News.
+Radio.
+Podcasts.
+Government sources.
+Public documents.
+Social and digital sources.
+Market and regulatory information.
+Customer-provided internal context.
+It transforms this fragmented information into continuously evolving intelligence objects called Situations.
+Each Situation answers eight questions:
+What is happening?
+Is it getting worse or better?
+Where is it happening?
+Who is involved?
+What is driving it?
+What happens next?
+How am I exposed?
+What should I do?
+The product family consists of:
+Vecta News
+The discovery and news intelligence layer.
+Qisimah Audio Insights
+The audio intelligence layer, particularly valuable for radio, interviews, local-language broadcasts and public discussions.
+SignalDesk
+The core intelligence and decision layer.
+The strategic opportunity is to build a platform that sits between:
+Raw information
+        ↓
+Media monitoring
+        ↓
+Risk intelligence
+        ↓
+Decision intelligence
+
+Existing companies are strong in individual parts of this value chain.
+Media-monitoring companies aggregate coverage.
+Risk firms provide expert analysis.
+Market-intelligence platforms provide enormous content libraries.
+Real-time event platforms detect breaking signals.
+SignalDesk's opportunity is to build an Africa-first platform that combines:
+African information coverage
++
+Audio intelligence
++
+Event intelligence
++
+Situation modelling
++
+Trajectory analysis
++
+Exposure mapping
++
+Actionable recommendations
+
+The business should initially focus on organisations where the value of knowing earlier is high:
+Investors and investment funds.
+Mining and energy companies.
+Large corporate communications and public-affairs teams.
+Financial institutions.
+Government departments and municipalities.
+NGOs and development organisations.
+
+1. The Strategic Thesis
+Africa is entering a period of increasing:
+Infrastructure investment.
+Energy investment.
+Mining and critical-mineral development.
+Urbanisation.
+Political competition.
+Regulatory change.
+Geopolitical competition.
+Climate and environmental pressure.
+Digital transformation.
+PwC's 2025–2050 infrastructure outlook projects combined annual infrastructure expenditure in South Africa, Nigeria, Ghana and Kenya to rise from approximately US$54 billion to US$96 billion by 2050, a 77% increase. The report also highlights the convergence of power, transport and digital infrastructure, and the importance of early community engagement.
+At the same time, African venture activity remained comparatively resilient in 2025. AVCA reports 506 venture deals worth US$3.9 billion, with climate-related ventures accounting for US$1.5 billion, or 40% of deal value.
+The more capital enters complex environments, the more valuable it becomes to understand:
+What is changing around an investment, asset, project or organisation before the change becomes an operational crisis.
+This is the market opportunity for SignalDesk.
+
+2. The Problem
+Organisations do not suffer from a lack of information.
+They suffer from information fragmentation.
+A typical organisation may use:
+Google
+News alerts
+Meltwater
+Media monitoring
+Social listening
+WhatsApp groups
+Consultants
+Government websites
+Internal analysts
+Excel
+Email
+
+The information is spread across systems.
+The analyst must manually answer:
+What happened?
+Is it connected to anything else?
+Is the situation escalating?
+Where is it spreading?
+Who is involved?
+What is driving it?
+Could it affect our assets?
+What should management do?
+
+The actual problem is therefore:
+The organisation must manually reconstruct the world from fragmented information.
+SignalDesk automates the reconstruction.
+
+3. The Product
+SignalDesk's fundamental object is the Situation.
+A Situation is:
+A meaningful, evolving real-world phenomenon involving connected events, actors, claims, locations, drivers and potential consequences.
+Example:
+Article 1
+Radio discussion
+Government statement
+Social-media activity
+Community meeting
+Political response
+Business disruption
+        ↓
+        ↓
+    SITUATION
+        ↓
+  "Growing opposition
+   to Project Alpha"
+
+The system then maintains the Situation over time.
+
+4. The Core Intelligence Loop
+OBSERVE
+   ↓
+DETECT
+   ↓
+CLASSIFY
+   ↓
+CONNECT
+   ↓
+UNDERSTAND
+   ↓
+ASSESS
+   ↓
+MAP EXPOSURE
+   ↓
+RECOMMEND ACTION
+
+The transformation is:
+Information
+    ↓
+Signals
+    ↓
+Events
+    ↓
+Patterns
+    ↓
+Situations
+    ↓
+Trajectory
+    ↓
+Scenarios
+    ↓
+Exposure
+    ↓
+Action
+
+This is the central business model.
+
+5. The Product Family
+5.1 Vecta News
+Vecta News is the information discovery layer.
+Its role is to:
+Discover news.
+Aggregate sources.
+Monitor topics.
+Track entities.
+Identify breaking information.
+Feed the SignalDesk intelligence engine.
+Vecta should not be positioned as merely another news reader.
+Its strategic role is:
+The structured information ingestion and discovery layer.
+
+5.2 Qisimah Audio Insights
+Qisimah provides the audio intelligence layer.
+The user was the developer of Qisimah Audio Insights with Sakhile Xulu, which provides a valuable foundation for the broader product architecture.
+Qisimah's strategic role is particularly important because audio remains a major information channel across Africa.
+Potential inputs include:
+Radio.
+Interviews.
+Podcasts.
+Public meetings.
+Community discussions.
+Political broadcasts.
+Local-language audio.
+The pipeline becomes:
+Audio
+   ↓
+Transcription
+   ↓
+Language Detection
+   ↓
+Translation
+   ↓
+Speaker / Topic Extraction
+   ↓
+Signal Extraction
+   ↓
+SignalDesk
+
+Qisimah provides a potential information advantage that many global platforms do not naturally possess.
+
+5.3 SignalDesk
+SignalDesk is the core commercial product.
+It answers:
+What is happening?
+        ↓
+Is it getting worse or better?
+        ↓
+Where?
+        ↓
+Who?
+        ↓
+Why?
+        ↓
+What happens next?
+        ↓
+How am I exposed?
+        ↓
+What should I do?
+
+The product should be sold as:
+Situational intelligence for organisations operating in a changing world.
+
+6. Target Customer Segments
+Segment 1: Investors
+This is potentially the strongest initial strategic customer.
+Target customers:
+Private equity funds.
+Infrastructure funds.
+Venture capital firms.
+Development finance institutions.
+Family offices.
+Sovereign investors.
+Institutional investors.
+Investment banks.
+Real estate investors.
+Customer problem
+An investor may have investments in:
+South Africa
+Nigeria
+Kenya
+Ghana
+Mozambique
+DRC
+Zambia
+Tanzania
+
+The investor needs to understand:
+Political developments.
+Community tensions.
+Regulatory changes.
+Labour issues.
+Security developments.
+Infrastructure disruption.
+Local political changes.
+Public sentiment.
+Emerging reputational risk.
+The investor's question is not:
+"What happened in Africa today?"
+It is:
+"What is happening that could affect my portfolio?"
+SignalDesk product
+Portfolio
+    ↓
+Portfolio Companies
+    ↓
+Assets
+    ↓
+Locations
+    ↓
+Connected Situations
+    ↓
+Exposure
+
+This creates a powerful product:
+Portfolio Situational Intelligence
+
+Segment 2: Mining and Energy
+This should be a major vertical.
+Mining and energy companies operate through:
+Physical assets
+Communities
+Government
+Regulators
+Contractors
+Transport networks
+Labour
+Power infrastructure
+
+They are highly exposed to external situations.
+Example
+Community grievance
+        ↓
+Public meeting
+        ↓
+Political mobilisation
+        ↓
+Road blockade
+        ↓
+Operational disruption
+
+SignalDesk should ideally identify the situation before the road blockade.
+This is a high-value use case because preventing or reducing operational disruption can justify substantial software expenditure.
+
+Segment 3: Corporate Communications and Public Affairs
+These teams already purchase media-monitoring products.
+This makes them a natural entry market.
+Existing competitors include Newsclip and Ornico.
+Newsclip reports monitoring print, broadcast, online and social media across Africa, with coverage across 53 African countries and a large historical media archive.
+Ornico offers AI-powered news monitoring across print, broadcast, online and social media through its Pythia platform, combining automation with human verification.
+The opportunity is not to compete directly with them on:
+"We can find your brand mentions."
+The opportunity is:
+"We can tell you when disconnected conversations are becoming a situation that could affect your organisation."
+Existing workflow
+Media monitoring
+        ↓
+Analyst
+        ↓
+Excel
+        ↓
+Manual report
+        ↓
+Management
+
+SignalDesk workflow
+Media
+Radio
+Social
+Government
+        ↓
+SignalDesk
+        ↓
+Situation
+        ↓
+Trajectory
+        ↓
+Exposure
+        ↓
+Recommended response
+
+
+Segment 4: Financial Institutions
+Banks and insurers have exposure to:
+Political risk.
+Sector risk.
+Customer risk.
+Regional risk.
+Operational disruption.
+Reputation.
+Regulatory change.
+The opportunity is to connect external events to:
+Clients
+Industries
+Branches
+Assets
+Loan books
+Markets
+
+For example:
+A local political situation may appear irrelevant to a bank until SignalDesk identifies that the affected municipality contains a concentration of commercial borrowers in the bank's portfolio.
+This is the transition from:
+External intelligence
+
+to:
+Portfolio intelligence
+
+
+Segment 5: Government
+Government customers may include:
+National departments.
+Provincial governments.
+Municipalities.
+Public agencies.
+Emergency management units.
+Economic development agencies.
+The use cases include:
+Early warning
+Public sentiment
+Social tension
+Infrastructure disruption
+Political intelligence
+Policy impact
+Community grievances
+
+A municipality could use SignalDesk to answer:
+Where are emerging tensions?
+Which issues are spreading?
+Which communities are mobilising?
+Which problems could affect service delivery?
+What is the trajectory?
+
+Segment 6: NGOs and Development Organisations
+NGOs often operate in environments where information is fragmented.
+Potential use cases:
+Humanitarian early warning.
+Community sentiment.
+Conflict monitoring.
+Development project risk.
+Programme impact.
+Local political changes.
+The platform could connect:
+Local radio
+Community discussion
+News
+Government
+NGO field reports
+
+into one Situation model.
+
+7. Market Structure
+SignalDesk operates at the intersection of several markets.
+Media Intelligence
+       +
+Market Intelligence
+       +
+Political Risk
+       +
+Geopolitical Intelligence
+       +
+Corporate Intelligence
+       +
+Decision Intelligence
+
+The market should therefore not be defined simply as:
+"The African media-monitoring market."
+That is too narrow.
+The addressable market is organisations paying for:
+Information
+Research
+Risk intelligence
+Market intelligence
+Corporate intelligence
+Political intelligence
+Strategic analysis
+
+
+8. Competitive Landscape
+Tier 1: Media Monitoring
+Newsclip
+Strengths:
+Deep African media coverage.
+53-country coverage.
+Print, broadcast, online and social monitoring.
+Historical data.
+Established customer relationships.
+Weakness:
+The core product is still primarily media monitoring and analysis.
+SignalDesk differentiation:
+From coverage monitoring to evolving situation intelligence.
+
+Ornico
+Strengths:
+Long-established South African brand intelligence company.
+AI-powered monitoring.
+Human verification.
+Broad media coverage.
+Weakness:
+Primarily focused on brand and media intelligence.
+SignalDesk differentiation:
+Situation, trajectory, exposure and action.
+
+Meltwater
+Meltwater operates across media intelligence, social listening, AI visibility, media relations and enterprise intelligence.
+Its current pricing is customised, with indicative third-party ranges from approximately US$10,000/year for Starter to US$130,000/year for Enterprise, although actual pricing varies by configuration and contract.
+SignalDesk should not attempt to outspend Meltwater globally.
+Its opportunity is:
+Africa
++
+Local context
++
+Audio
++
+Situation intelligence
++
+Exposure
+
+
+Tier 2: Real-Time Event Intelligence
+Dataminr
+Dataminr is a major competitor at the conceptual level.
+It detects early signals of events, risks and threats from public data. Its platform processes multimodal information across more than one million public sources, more than 150 languages and more than 220 countries and territories.
+Dataminr is extremely strong in:
+Real-time event detection.
+Global coverage.
+Multimodal AI.
+Security.
+Critical events.
+SignalDesk should not attempt to beat Dataminr on:
+Raw global data scale.
+SignalDesk should differentiate through:
+African depth
++
+Local context
++
+Situation memory
++
+Exposure mapping
++
+Decision workflow
+
+
+Tier 3: Market Intelligence
+AlphaSense
+AlphaSense is a major competitor for investors, corporate strategy and research teams.
+It serves more than 7,000 enterprises and provides access to more than 500 million financial and business documents, including company filings, expert transcripts, broker research and other premium content.
+AlphaSense is increasingly moving from search and research toward always-on AI workflows and agentic research execution.
+SignalDesk cannot win by being:
+"A smaller AlphaSense."
+It must win by becoming:
+The intelligence layer for situations unfolding in Africa.
+
+Tier 4: Political and Policy Intelligence
+FiscalNote
+FiscalNote provides AI-powered policy and government-relations intelligence.
+Its PolicyNote platform tracks policy developments and supports policy monitoring, social listening and government affairs workflows. FiscalNote has also expanded its PolicyNote API to allow policy intelligence to be embedded into AI agents and enterprise systems.
+SignalDesk's opportunity is to apply a similar intelligence architecture to a broader African environment:
+Political
++
+Social
++
+Economic
++
+Operational
++
+Media
++
+Community
+
+
+Tier 5: Political Risk and Intelligence Consultancies
+Examples include:
+Control Risks.
+Verisk Maplecroft.
+Oxford Economics.
+Eurasia Group.
+Regional political-risk consultancies.
+Control Risks, for example, provides political-risk and intelligence work for financial, extractive and technology-sector clients operating in Africa.
+These firms are not necessarily direct software competitors.
+They are also potential:
+Customers, partners and distribution channels.
+SignalDesk could help them scale their intelligence work.
+
+9. Competitive Positioning
+The competitive map is:
+                HIGH DECISION CONTEXT
+                         ▲
+                         │
+          Political      │       SignalDesk
+          Risk Firms     │       ★
+                         │
+                         │
+        AlphaSense       │
+                         │
+                         │
+                         │
+  ───────────────────────┼────────────────────►
+    LOW AFRICA           │         HIGH AFRICA
+    SPECIALISATION       │         SPECIALISATION
+                         │
+       Meltwater         │      Newsclip
+                         │
+       Dataminr          │      Ornico
+                         │
+                         ▼
+                 LOW DECISION CONTEXT
+
+The strategic whitespace is:
+High African contextual depth + high decision relevance.
+
+10. The Strategic Moat
+The moat should not be:
+"We have an LLM."
+Models become commodities.
+The moat should be:
+African source graph
+        +
+African entity graph
+        +
+African event graph
+        +
+Historical situation archive
+        +
+Situation trajectories
+        +
+Exposure relationships
+        +
+Human analyst corrections
+
+Over time, SignalDesk builds a proprietary dataset:
+How situations develop in Africa.
+This is highly valuable.
+The platform can eventually learn:
+Early pattern
+      ↓
+Situation type
+      ↓
+Historical trajectory
+      ↓
+Likely developments
+
+
+11. Business Model
+SignalDesk should use a hybrid enterprise SaaS model.
+Revenue streams
+1. Platform subscription
+Annual SaaS licence.
+
+2. Intelligence coverage
+Pricing based on:
+Countries.
+Source coverage.
+Audio monitoring.
+Data volume.
+Custom sources.
+
+3. Organisation exposure module
+Additional pricing for:
+Assets.
+Locations.
+Portfolio companies.
+Projects.
+Dependencies.
+
+4. API and data products
+Customers can consume:
+Events
+Entities
+Situations
+Trajectory data
+Country intelligence
+
+through an API.
+
+5. Enterprise deployment
+For large customers:
+Private cloud.
+Customer cloud.
+Dedicated environment.
+Data residency.
+Enterprise security.
+
+6. Professional services
+Services should support—not replace—the software.
+Examples:
+Situation configuration.
+Data integration.
+Intelligence onboarding.
+Custom taxonomy.
+Analyst training.
+
+12. Recommended Pricing Architecture
+Do not price solely by user seat.
+The value of SignalDesk is determined more by:
+Countries
++
+Assets
++
+Coverage
++
+Situations
++
+Exposure
++
+Workflow
+
+Recommended model:
+SignalDesk Monitor
+For smaller teams.
+Indicative price:
+R15,000–R30,000/month
+
+Target:
+Small corporate teams.
+NGOs.
+Smaller investment firms.
+Communications agencies.
+
+SignalDesk Intelligence
+For professional teams.
+Indicative price:
+R40,000–R100,000/month
+
+Target:
+Corporate communications.
+Investors.
+Mining companies.
+Energy companies.
+Banks.
+Includes:
+Situation intelligence.
+Custom monitoring.
+Exposure mapping.
+Advanced analytics.
+
+SignalDesk Enterprise
+For major institutions.
+Indicative price:
+R1 million–R5 million/year
+
+Target:
+Large corporates.
+Banks.
+Government.
+Major investment firms.
+Multinational companies.
+Includes:
+Multiple teams.
+Custom data.
+APIs.
+SSO.
+Private deployment options.
+Custom integrations.
+
+Enterprise Intelligence Platform
+For large strategic customers.
+Indicative price:
+R5 million–R20 million+/year
+
+This is not a standard SaaS package.
+It may include:
+Custom infrastructure.
+Dedicated intelligence coverage.
+Private deployment.
+Data integrations.
+Enterprise-wide exposure mapping.
+Custom AI workflows.
+
+13. Financial Assumptions
+The following financial model is an illustrative planning model, not a forecast.
+The key assumption is that SignalDesk is initially a high-value B2B product with relatively few customers.
+
+14. Base Case Revenue Model
+Year 1
+5 paying customers
+Average annual contract:
+R600,000
+
+Revenue:
+R3 million
+
+Additional:
+Professional services:
+R500,000
+
+Total Year 1 revenue
+R3.5 million
+
+
+Year 2
+15 customers
+Average annual contract:
+R900,000
+
+Subscription revenue:
+R13.5 million
+
+Professional services:
+R2 million
+
+Total Year 2
+R15.5 million
+
+
+Year 3
+35 customers
+Average annual contract:
+R1.2 million
+
+Subscription revenue:
+R42 million
+
+Professional services/API:
+R8 million
+
+Total Year 3
+R50 million
+
+
+Year 4
+70 customers
+Average annual contract:
+R1.5 million
+
+Subscription revenue:
+R105 million
+
+Additional:
+API
+Data
+Services
+
+Estimated:
+R20 million
+
+Total Year 4
+R125 million
+
+
+Year 5
+120 customers
+Average annual contract:
+R1.8 million
+
+Subscription revenue:
+R216 million
+
+Additional data/API/services:
+R40 million
+
+Total Year 5
+R256 million
+
+
+15. Base Case Revenue Table
+Year
+Customers
+Subscription Revenue
+Other Revenue
+Total Revenue
+Year 1
+5
+R3.0m
+R0.5m
+R3.5m
+Year 2
+15
+R13.5m
+R2.0m
+R15.5m
+Year 3
+35
+R42.0m
+R8.0m
+R50.0m
+Year 4
+70
+R105.0m
+R20.0m
+R125.0m
+Year 5
+120
+R216.0m
+R40.0m
+R256.0m
+This is a high-growth enterprise software scenario.
+The key driver is not millions of users.
+It is:
+A relatively small number of high-value institutional customers.
+
+16. Cost Structure
+Year 1
+Primary costs:
+Product development
+AI infrastructure
+Data acquisition
+Audio processing
+Cloud
+Legal
+Security
+Sales
+
+Estimated:
+R8m–R15m
+
+
+Year 2
+Estimated:
+R15m–R25m
+
+As the company builds:
+Sales.
+Customer success.
+Data engineering.
+Intelligence operations.
+
+Year 3
+Estimated:
+R30m–R45m
+
+At this point the company should be moving toward operating leverage.
+
+17. Unit Economics
+The critical metric is:
+Annual Contract Value
+-
+Cost to Serve
+=
+Gross Margin
+
+Target:
+Gross margin:
+70%+
+
+Eventually:
+80%+
+
+Potential cost drivers:
+AI inference.
+Transcription.
+Data licensing.
+Storage.
+Search.
+Human verification.
+The business must be careful not to create a model where:
+R1m customer
+        ↓
+R800k data + AI costs
+
+The architecture must optimise:
+Cost per processed signal
+Cost per situation
+Cost per customer
+
+
+18. Key Financial KPIs
+Revenue
+ARR
+MRR
+New ARR
+Expansion ARR
+
+
+Customer
+Number of customers
+Average contract value
+Net revenue retention
+Gross revenue retention
+Customer acquisition cost
+Payback period
+
+
+Product
+Situations detected
+Situations validated
+Situation precision
+False-positive rate
+Time to insight
+Customer actions taken
+
+
+Intelligence
+Entity resolution accuracy
+Event extraction accuracy
+Situation matching accuracy
+Trajectory accuracy
+Claim classification accuracy
+
+
+19. North Star Metric
+The primary North Star should not be:
+Number of articles processed.
+That rewards volume rather than value.
+The better North Star is:
+Decision-relevant situations correctly identified and connected to customer exposure.
+Possible metric:
+Verified Relevant Exposures
+
+A stronger version:
+Number of customer-relevant situations identified before they became obvious through conventional reporting.
+This measures the actual product value.
+
+20. Key Performance Indicators
+Product KPIs
+Time from source publication to signal extraction
+Time from signal to event
+Time from event to situation
+Situation precision
+Situation recall
+False-positive rate
+
+
+Customer KPIs
+Weekly active intelligence users
+Situations opened
+Exposure alerts opened
+Recommendations acted upon
+Analyst time saved
+Reports generated
+
+
+Commercial KPIs
+CAC
+ACV
+ARR
+NRR
+Gross margin
+Churn
+Sales cycle
+Pipeline coverage
+
+
+21. Go-To-Market Strategy
+SignalDesk should not launch broadly to everyone.
+The product should enter through a narrow wedge.
+Recommended beachhead
+Phase 1:
+South African investors
++
+Mining / energy
++
+Corporate affairs
+
+Why?
+Because these customers:
+Have high-value exposure.
+Already pay for intelligence.
+Understand risk.
+Have budgets.
+Can provide real-world feedback.
+Have regional expansion needs.
+
+22. The Initial Sales Strategy
+The product should be sold through a consultative process.
+Step 1
+Identify the customer's:
+Assets
+Projects
+Locations
+Markets
+Concerns
+
+Step 2
+Build a customised intelligence map.
+Step 3
+Demonstrate historical situations.
+Step 4
+Show:
+What SignalDesk would have detected earlier.
+Step 5
+Run a pilot.
+Step 6
+Convert to annual contract.
+
+23. The Best Sales Demonstration
+Do not demonstrate:
+"Here is our dashboard."
+Demonstrate:
+"Here is a real situation that affected your industry. This is how it developed. These were the early signals. These were the actors. These were the locations. This is how your assets were exposed. This is what SignalDesk would have told you at each stage."
+That sells the value of the product.
+
+24. The Historical Backtesting Strategy
+A powerful sales tool is historical backtesting.
+Take a real event:
+Situation
+    ↓
+Timeline
+    ↓
+Early signals
+    ↓
+Escalation
+    ↓
+Impact
+
+Then ask:
+At what point could SignalDesk have identified this as an emerging situation?
+This proves:
+Detection
++
+Context
++
+Trajectory
++
+Exposure
+
+
+25. Partnership Strategy
+Potential partners include:
+Political-risk firms
+SignalDesk becomes their technology layer.
+
+Investor associations
+Potential distribution into:
+Private equity.
+Venture capital.
+Infrastructure funds.
+
+Universities
+Partnerships for:
+Language models.
+African NLP.
+Political science.
+Data science.
+
+Media companies
+Potential content and data partnerships.
+
+Telecom companies
+Potential access to:
+Regional distribution.
+Audio.
+Data infrastructure.
+
+Cloud providers
+Potential:
+Credits.
+Enterprise infrastructure.
+AI partnerships.
+
+26. Roadmap
+Phase 0 — Foundation
+Months 0–3
+Build:
+Core data model
+Source ingestion
+Entity extraction
+Event extraction
+Situation object
+Basic situation timeline
+
+Integrate:
+Vecta
+Qisimah
+SignalDesk
+
+Target output:
+A functioning Situation Intelligence Engine.
+
+Phase 1 — Intelligence MVP
+Months 3–6
+Features:
+News ingestion
+Audio ingestion
+Transcription
+Entity resolution
+Event extraction
+Situation detection
+Situation matching
+Situation timeline
+Basic trajectory
+
+Target:
+100–500 situations
+
+with human validation.
+
+Phase 2 — Customer Intelligence
+Months 6–12
+Add:
+Organisation profiles
+Assets
+Locations
+Exposure mapping
+Situation alerts
+Scenario analysis
+Recommendations
+
+Launch pilots with:
+Investors
+Mining
+Energy
+Corporate affairs
+
+
+Phase 3 — Commercial Platform
+Year 2
+Add:
+Multi-tenant SaaS
+Role-based access
+SSO
+API
+Custom taxonomies
+Customer dashboards
+Portfolio monitoring
+
+Target:
+15 paying customers
+
+
+Phase 4 — Intelligence Network
+Year 3
+Add:
+Country intelligence
+Historical situation analytics
+Predictive indicators
+Benchmarking
+Cross-country comparisons
+
+Target:
+35+ enterprise customers
+
+
+Phase 5 — Infrastructure Platform
+Years 4–5
+The platform becomes:
+SignalDesk API
+        ↓
+Enterprise systems
+        ↓
+AI agents
+        ↓
+Decision workflows
+
+Potential integrations:
+Risk systems
+CRM
+ERP
+Portfolio systems
+Security platforms
+Government systems
+
+
+27. The Five-Year Strategic Roadmap
+2026
+Foundation
+    ↓
+2027
+Commercial MVP
+    ↓
+2028
+Enterprise expansion
+    ↓
+2029
+African intelligence network
+    ↓
+2030
+Intelligence infrastructure platform
+
+
+28. Risks
+Risk 1: Becoming another media-monitoring platform
+Mitigation
+The core product must remain:
+Situation
++
+Trajectory
++
+Exposure
++
+Action
+
+
+Risk 2: Data licensing costs
+Mitigation
+Use a hybrid strategy:
+Public sources
++
+Licensed premium data
++
+Customer data
++
+Proprietary audio
+
+
+Risk 3: AI hallucinations
+Mitigation
+Every major conclusion should have:
+Evidence
+Confidence
+Source traceability
+
+
+Risk 4: False positives
+Mitigation
+Use:
+Human feedback
+Situation merging
+Analyst validation
+Confidence thresholds
+
+
+Risk 5: Selling to government too early
+Government sales cycles can be long.
+Mitigation
+Initially build commercial revenue through:
+Investors
+Mining
+Energy
+Corporate intelligence
+
+Then pursue government contracts.
+
+Risk 6: Trying to cover all of Africa immediately
+Mitigation
+Start with:
+South Africa
+
+Then expand through:
+Nigeria
+Kenya
+Ghana
+Mozambique
+Zambia
+Tanzania
+DRC
+
+based on customer demand.
+
+29. Strategic Geographic Expansion
+Stage 1
+South Africa.
+
+Stage 2
+English-speaking markets:
+Kenya
+Ghana
+Nigeria
+Zambia
+Zimbabwe
+
+
+Stage 3
+Portuguese and Francophone markets:
+Mozambique
+Angola
+DRC
+Senegal
+Côte d'Ivoire
+Cameroon
+
+This requires significant language investment.
+The advantage is that Qisimah's audio capability could become strategically important in this expansion.
+
+30. The Africa-First Advantage
+The platform should not simply take a global product and add an Africa filter.
+It should be built around African information realities.
+This includes:
+Radio
+Local languages
+Informal information networks
+Community organisations
+Political structures
+Government documents
+Local media
+
+This is strategically important because local situations often become visible first through channels that are not dominant in global intelligence systems.
+
+31. Why Investors Could Become a Major Customer
+The investor use case is particularly compelling.
+An investor may have a portfolio spread across:
+Countries
+Industries
+Projects
+Communities
+Supply chains
+
+The investor needs continuous monitoring of external situations.
+SignalDesk can create:
+Portfolio
+    ↓
+Asset Map
+    ↓
+Situation Map
+    ↓
+Exposure Map
+    ↓
+Investment Committee Intelligence
+
+The platform could eventually produce:
+A live external-risk intelligence layer for the portfolio.
+This is a much stronger proposition than selling:
+"African news monitoring."
+
+32. The Strategic Product Expansion
+The product can eventually move from:
+External Intelligence
+
+to:
+External Intelligence
++
+Internal Organisational Context
+
+For example:
+External Situation
+        ↓
+Customer Asset
+        ↓
+Internal Dependency
+        ↓
+Business Process
+        ↓
+Potential Impact
+
+This creates a much deeper product.
+The ultimate product is not merely:
+"What is happening in Africa?"
+It is:
+"What is happening, what does it mean for our organisation, and what should we do?"
+
+33. Funding Strategy
+The company should ideally raise funding in stages.
+Pre-seed
+Use for:
+Core product
+Data pipeline
+AI architecture
+First pilots
+
+Possible target:
+US$500k–US$1.5m
+
+
+Seed
+Use for:
+Product development
+Data infrastructure
+Sales
+Customer success
+Regional expansion
+
+Possible target:
+US$2m–US$5m
+
+
+Series A
+Raise only once the company has proven:
+Recurring revenue
+Strong retention
+Repeatable sales
+Proprietary data moat
+
+The company should avoid raising large amounts before proving that organisations will pay for the intelligence product.
+
+34. What Investors Will Evaluate
+Investors will ask:
+Is this a news company?
+If yes, the opportunity may appear limited.
+Is this an AI summarisation company?
+If yes, the moat is weak.
+Is this a media monitoring platform?
+If yes, there are established incumbents.
+Is this a decision-intelligence platform with proprietary African data and situation history?
+That is the stronger investment thesis.
+The pitch must therefore be:
+SignalDesk is building the intelligence infrastructure layer for organisations operating in complex African markets.
+
+35. The Defensible Company
+The long-term company should consist of:
+Data
+   +
+Models
+   +
+Knowledge Graph
+   +
+Situation Archive
+   +
+Exposure Graph
+   +
+Workflow
+
+The most valuable asset may ultimately be:
+The historical African Situation Graph.
+A structured record of:
+What happened
+Where
+When
+Who was involved
+What drove it
+How it developed
+What happened next
+Who was affected
+
+This could become extremely valuable for:
+Investors.
+Governments.
+Banks.
+Researchers.
+Insurers.
+Corporates.
+
+36. Final Strategic Positioning
+SignalDesk should be positioned as:
+Africa's intelligence infrastructure for understanding change.
+Not:
+Another news app.
+Not:
+Another media monitoring tool.
+Not:
+Another AI chatbot.
+Not:
+A generic risk dashboard.
+The product is:
+World
+   ↓
+Information
+   ↓
+Signals
+   ↓
+Events
+   ↓
+Situations
+   ↓
+Trajectory
+   ↓
+Exposure
+   ↓
+Action
+
+The fundamental question the company answers is:
+What is changing, what does it mean, and what should I do about it?
+That is the business.
+
+37. The Business in One Sentence
+SignalDesk is an Africa-first situational intelligence platform that transforms fragmented news, audio, public data and organisational context into continuously evolving intelligence about situations, trajectories, exposure and action.
+
+38. Recommended Initial Business Model
+The strongest initial strategy is:
+Qisimah
+       +
+Vecta
+       ↓
+SignalDesk Intelligence Engine
+       ↓
+Investors
+Mining
+Energy
+Corporate Affairs
+Financial Institutions
+       ↓
+Enterprise SaaS
+       +
+Data/API
+       +
+Strategic Intelligence
+
+The commercial wedge should be:
+"Show me what is happening around my investments, assets and operations before it becomes an obvious problem."
+That is a much stronger commercial proposition than:
+"We monitor Africa."
+
+Final Strategic Assessment
+The opportunity is real, but the company must remain disciplined.
+The biggest risk is building too much:
+News app
++
+Social listening
++
+Risk platform
++
+Investor platform
++
+Government platform
++
+AI assistant
+
+That would create a confused product.
+The business should instead build one core engine:
+The Situation Intelligence Engine.
+Everything else should be an application of that engine.
+Situation Intelligence Engine
+            │
+ ┌──────────┼───────────┐
+ ▼          ▼           ▼
+Investor   Corporate   Government
+Product    Product     Product
+
+The underlying intelligence remains the same.
+The customer-specific layer changes:
+Same Situation
+       ↓
+Different Exposure
+       ↓
+Different Recommendation
+
+That is the most important architectural and commercial insight.
+SignalDesk's long-term opportunity is not to become the company that knows everything.
+It is to become the company that can answer, for a specific organisation:
+What is happening, how is it developing, how am I exposed, and what should I do next?

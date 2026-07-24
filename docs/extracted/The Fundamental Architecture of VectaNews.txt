@@ -1,0 +1,756 @@
+
+
+1. The Fundamental Architecture
+                   REAL WORLD
+                        │
+        ┌───────────────┼────────────────┐
+        │               │                │
+        ▼               ▼                ▼
+     RADIO           NEWS MEDIA        SOCIAL
+    SENSOR          SENSOR            SENSOR
+        │               │                │
+        ▼               ▼                ▼
+   QISIMAH /        VECTANEWS        SOCIAL
+   RADIO PIPELINE   PIPELINE         PIPELINE
+        │               │                │
+        └───────────────┼────────────────┘
+                        ▼
+                 ┌──────────────┐
+                 │   SIGNALDESK │
+                 │  EVENT LAYER │
+                 └──────┬───────┘
+                        ▼
+                 ┌──────────────┐
+                 │   SITUATION  │
+                 │    ENGINE    │
+                 └──────┬───────┘
+                        ▼
+                 ┌──────────────┐
+                 │  TRAJECTORY  │
+                 └──────┬───────┘
+                        ▼
+                 ┌──────────────┐
+                 │   EXPOSURE   │
+                 └──────┬───────┘
+                        ▼
+                 ┌──────────────┐
+                 │    ACTION    │
+                 └──────────────┘
+
+The fundamental principle is:
+Different sources observe reality. SignalDesk determines what those observations mean together.
+
+2. What VectaNews Should Actually Do
+VectaNews should specialise in turning the enormous news ecosystem into structured observations.
+Its job is not merely:
+"Find news articles."
+Its job is:
+"Detect, structure, classify, cluster, and track developments reported across the news ecosystem."
+The data flow should be:
+NEWS SOURCES
+     ↓
+Discovery
+     ↓
+Collection
+     ↓
+Deduplication
+     ↓
+Article Extraction
+     ↓
+Classification
+     ↓
+Entity Extraction
+     ↓
+Claim Extraction
+     ↓
+Event Detection
+     ↓
+Event Clustering
+     ↓
+SignalDesk
+
+So VectaNews becomes the News Intelligence Ingestion Layer.
+
+3. The Difference Between VectaNews and SignalDesk
+This distinction is extremely important.
+VectaNews asks:
+What are the media sources reporting?
+It produces:
+Article
+     ↓
+Claim
+     ↓
+Entity
+     ↓
+Event
+
+Example:
+Article:
+"Residents protest against mining company's proposed expansion."
+
+Entities:
+- Mining Company X
+- Community Y
+- Municipality Z
+
+Event:
+Community protest against mining expansion.
+
+
+SignalDesk asks:
+What is happening in the real world, based on all available evidence?
+It takes:
+Article 1
+Article 2
+Radio discussion
+Government statement
+Social activity
+Historical events
+
+and asks:
+Are these connected?
+
+Then:
+Event 1
+       ┐
+Event 2 ───► SITUATION
+Event 3
+       ┘
+
+This is the distinction:
+VectaNews detects events. SignalDesk understands situations.
+
+4. The VectaNews Data Flow
+I would design VectaNews like this:
+┌──────────────────────────────────────┐
+│             NEWS SOURCES             │
+│                                      │
+│ Websites │ RSS │ APIs │ Newswires    │
+│ Local Media │ International Media    │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│          SOURCE DISCOVERY             │
+│                                      │
+│ Find new articles                    │
+│ Detect new publications               │
+│ Monitor source activity               │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│           ARTICLE INGESTION           │
+│                                      │
+│ URL                                  │
+│ Headline                             │
+│ Body                                │
+│ Author                              │
+│ Publication Time                    │
+│ Source                              │
+│ Location                            │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│        NORMALISATION & CLEANING       │
+│                                      │
+│ Remove duplicates                    │
+│ Clean article text                  │
+│ Detect language                      │
+│ Identify syndicated content          │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│          CONTENT INTELLIGENCE         │
+│                                      │
+│ Topics                              │
+│ Entities                            │
+│ Locations                           │
+│ Claims                              │
+│ Sentiment                            │
+│ Narrative                            │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│            EVENT ENGINE               │
+│                                      │
+│ Protest                             │
+│ Election                             │
+│ Policy decision                      │
+│ Business disruption                  │
+│ Court ruling                         │
+│ Conflict                             │
+│ Investment                            │
+│ Crisis                               │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│          EVENT CLUSTERING             │
+│                                      │
+│ Article 1                            │
+│ Article 2                            │
+│ Article 3                            │
+│ Radio Segment                        │
+│ Government Statement                 │
+│                                      │
+│          SAME EVENT?                  │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+              SIGNALDESK
+
+
+5. The Critical Layer: Event Clustering
+This is where VectaNews becomes strategically valuable.
+Imagine 50 articles:
+Article 1:
+"Residents protest mining project."
+
+Article 2:
+"Police monitor community gathering."
+
+Article 3:
+"Mining company delays operations."
+
+Article 4:
+"Mayor calls for emergency meeting."
+
+Article 5:
+"Community leaders threaten further action."
+
+A traditional news aggregator sees:
+5 articles
+
+VectaNews should see:
+5 observations
+        ↓
+1 developing event
+
+SignalDesk should then see:
+DEVELOPING SITUATION:
+Growing community opposition to Mining Project X.
+
+This is a major conceptual shift.
+
+6. VectaNews and Radio Should Produce the Same Data Type
+This is essential for the architecture.
+The radio pipeline produces:
+Broadcast
+     ↓
+Transcript
+     ↓
+Claim
+     ↓
+Event
+
+VectaNews produces:
+Article
+     ↓
+Text
+     ↓
+Claim
+     ↓
+Event
+
+Both should eventually produce the same canonical object:
+{
+  "event_id": "evt_123",
+  "event_type": "community_protest",
+  "location": "Location X",
+  "entities": [
+    "Community Y",
+    "Company Z",
+    "Municipality A"
+  ],
+  "time": "2026-07-22T10:00:00",
+  "claims": [],
+  "sources": [],
+  "confidence": 0.82
+}
+
+This is the architectural key.
+The upstream sources can be completely different.
+But once they reach the Event Layer, they become interoperable.
+
+7. The Unified SignalDesk Event Layer
+┌──────────────┐
+│ VectaNews    │
+│              │
+│ Article      │
+│ Article      │
+│ Article      │
+└──────┬───────┘
+       │
+       ▼
+     EVENT
+       ▲
+       │
+┌──────┴───────┐
+│              │
+│ Radio        │
+│              │
+│ Broadcast    │
+│ Transcript   │
+└──────────────┘
+
+But then:
+                EVENT LAYER
+
+  ┌───────────┐   ┌───────────┐   ┌───────────┐
+  │ News Event│   │ Radio     │   │ Social    │
+  │           │   │ Event     │   │ Event     │
+  └─────┬─────┘   └─────┬─────┘   └─────┬─────┘
+        │               │               │
+        └───────────────┼───────────────┘
+                        ▼
+                ┌──────────────┐
+                │  EVENT GRAPH │
+                └──────┬───────┘
+                       ▼
+                ┌──────────────┐
+                │  SITUATION   │
+                └──────────────┘
+
+
+8. The Event Graph Is the Bridge
+Suppose:
+Event A:
+Residents protest.
+
+Event B:
+Mining company suspends operations.
+
+Event C:
+Mayor calls emergency meeting.
+
+Event D:
+Radio callers demand intervention.
+
+Event E:
+Government announces investigation.
+
+The event graph connects them:
+Community Grievance
+        │
+        ▼
+     Protest
+        │
+        ▼
+Operational Disruption
+        │
+        ▼
+Political Intervention
+        │
+        ▼
+Government Response
+
+SignalDesk now understands the causal and temporal relationship between events.
+This is much more valuable than a list of articles.
+
+9. How VectaNews Answers the Eight Questions
+The SignalDesk core promise is:
+What is happening?
+Is it getting worse or better?
+Where is it happening?
+Who is involved?
+What is driving it?
+What happens next?
+How am I exposed?
+What should I do?
+Let's map VectaNews into this.
+
+1. What is happening?
+VectaNews contributes:
+Articles
+     ↓
+Events
+     ↓
+Event Clusters
+
+Example:
+A developing protest movement is forming around a mining project.
+The system knows because:
+5 articles
++
+2 radio discussions
++
+government statement
+
+are all connected.
+
+2. Is it getting worse or better?
+This requires time-series analysis.
+VectaNews tracks:
+Event Frequency
+Mention Volume
+Source Diversity
+Geographic Spread
+Actor Escalation
+Language Intensity
+
+Example:
+Monday:
+2 articles
+
+Tuesday:
+7 articles
+3 radio discussions
+
+Wednesday:
+18 articles
+12 radio discussions
+Government statement
+
+SignalDesk might conclude:
+Trajectory: ESCALATING
+Confidence: HIGH
+
+The important point:
+A situation is not worsening merely because more articles are published.
+We need multiple signals:
+More actors involved
++
+More locations involved
++
+More severe actions
++
+More institutional response
+
+That is stronger.
+
+3. Where is it happening?
+VectaNews extracts:
+Country
+Province
+City
+Municipality
+Community
+Facility
+Road
+Mine
+Border
+
+The event can then be geo-coded.
+Event
+    ↓
+Location
+    ↓
+Map
+    ↓
+Spatial Spread
+
+This is especially powerful for:
+Municipalities.
+Mining companies.
+Investors.
+Government.
+NGOs.
+Infrastructure companies.
+
+4. Who is involved?
+The entity layer identifies:
+People
+Companies
+Political parties
+Government departments
+Municipalities
+Communities
+NGOs
+Institutions
+
+Then SignalDesk can build:
+Actor A
+    │
+    ├── supports
+    ├── opposes
+    ├── funds
+    ├── regulates
+    ├── owns
+    └── influences
+
+This becomes an Actor Relationship Graph.
+
+5. What is driving it?
+This is where SignalDesk must go beyond article summaries.
+The system should distinguish:
+Trigger
+Cause
+Grievance
+Catalyst
+Underlying Driver
+
+Example:
+Immediate Trigger:
+Company announces expansion.
+
+Underlying Driver:
+Long-running land dispute.
+
+Community Grievance:
+Employment promises not fulfilled.
+
+Political Catalyst:
+Local election approaching.
+
+VectaNews supplies the evidence.
+SignalDesk performs the synthesis.
+
+10. What Happens Next?
+This is one of the most difficult and valuable parts.
+The system can analyse:
+Current Situation
+        ↓
+Historical Similar Situations
+        ↓
+Current Trajectory
+        ↓
+Actor Behaviour
+        ↓
+Likely Next Developments
+
+Example:
+Community complaint
+        ↓
+Public meeting
+        ↓
+Threat of protest
+        ↓
+Actual protest
+        ↓
+Road blockade
+        ↓
+Police intervention
+
+If SignalDesk detects the early stages, it can identify:
+The situation is moving toward potential operational disruption.
+This does not mean pretending to predict the future with certainty.
+It means:
+Identify plausible next developments based on observed trajectory and comparable patterns.
+
+11. How Am I Exposed?
+This is where SignalDesk becomes a commercial product rather than merely an intelligence platform.
+A situation by itself is not enough.
+The customer needs to define:
+MY ORGANISATION
+       │
+       ├── Assets
+       ├── Operations
+       ├── Employees
+       ├── Supply Chain
+       ├── Investments
+       ├── Locations
+       └── Strategic Interests
+
+Then:
+SITUATION
+    ↓
+Exposure Engine
+    ↓
+Customer Profile
+
+Example:
+Situation:
+Community protest near Mine X.
+
+Customer:
+Investment Fund Y.
+
+Exposure:
+Fund owns 12% of Mine X's parent company.
+
+Impact:
+Potential operational disruption.
+
+Risk:
+Medium → High.
+
+
+This is a critical architectural distinction:
+SignalDesk needs a world model and a customer model.
+The world model says:
+What is happening?
+
+The customer model says:
+Why should I care?
+
+
+12. What Should I Do?
+The final layer should not be:
+"Here is a summary."
+It should be:
+Situation
+    ↓
+Impact
+    ↓
+Recommended Response
+
+For example:
+Recommended actions:
+
+1. Monitor the community meeting scheduled for Friday.
+2. Confirm operational contingency plans.
+3. Review stakeholder engagement.
+4. Prepare communications response.
+5. Escalate to regional management.
+
+The recommendation should be:
+Evidence-Based
+Situation-Specific
+Role-Specific
+
+A mining company and a journalist should not receive the same recommendation.
+
+13. VectaNews's Role in the Core Architecture
+I would define it like this:
+                VECTANEWS
+                     │
+                     ▼
+             MEDIA INTELLIGENCE
+                     │
+      ┌──────────────┼──────────────┐
+      │              │              │
+   ARTICLES        CLAIMS         EVENTS
+      │              │              │
+      └──────────────┼──────────────┘
+                     ▼
+              SIGNALDESK EVENT BUS
+                     │
+                     ▼
+              EVENT GRAPH
+                     │
+                     ▼
+             SITUATION ENGINE
+
+The product hierarchy becomes:
+VectaNews
+    =
+News Intelligence
+
+Radio Sensor
+    =
+Broadcast Intelligence
+
+Social Sensor
+    =
+Social Intelligence
+
+SignalDesk
+    =
+Unified Situation Intelligence
+
+
+14. The Complete Data Flow
+┌────────────────────────────────────────────────────────────┐
+│                     REAL WORLD                             │
+│                                                            │
+│ Politics │ Business │ Conflict │ Economy │ Society         │
+└───────────────────────────┬────────────────────────────────┘
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+          ▼                 ▼                 ▼
+       NEWS              RADIO             SOCIAL
+          │                 │                 │
+          ▼                 ▼                 ▼
+     VECTANEWS        RADIO SENSOR       SOCIAL SENSOR
+          │                 │                 │
+          ▼                 ▼                 ▼
+      ARTICLES        TRANSCRIPTS         POSTS
+          │                 │                 │
+          └─────────────────┼─────────────────┘
+                            ▼
+                    ┌───────────────┐
+                    │   NORMALISE   │
+                    │               │
+                    │ Claims        │
+                    │ Entities      │
+                    │ Locations     │
+                    │ Time           │
+                    └───────┬───────┘
+                            ▼
+                    ┌───────────────┐
+                    │ EVENT ENGINE  │
+                    └───────┬───────┘
+                            ▼
+                    ┌───────────────┐
+                    │ EVENT GRAPH   │
+                    └───────┬───────┘
+                            ▼
+                    ┌───────────────┐
+                    │ SITUATION     │
+                    │ ENGINE        │
+                    └───────┬───────┘
+                            ▼
+                    ┌───────────────┐
+                    │ TRAJECTORY    │
+                    └───────┬───────┘
+                            ▼
+                    ┌───────────────┐
+                    │ EXPOSURE      │
+                    │ ENGINE        │
+                    └───────┬───────┘
+                            ▼
+                    ┌───────────────┐
+                    │ DECISION      │
+                    │ INTELLIGENCE  │
+                    └───────────────┘
+
+
+15. The Most Important Product Insight
+VectaNews should not compete with news aggregators on:
+"We have more articles."
+It should compete on:
+"We understand how individual reports connect to developing situations."
+And SignalDesk should not compete with dashboards on:
+"We show you more data."
+It should compete on:
+"We tell you what is happening, whether it is changing, how it affects you, and what you should do."
+That is the product hierarchy:
+┌───────────────────────────────────────┐
+│          DECISION INTELLIGENCE         │
+│                                       │
+│       What should I do?               │
+├───────────────────────────────────────┤
+│             EXPOSURE                  │
+│                                       │
+│       How am I affected?              │
+├───────────────────────────────────────┤
+│            TRAJECTORY                 │
+│                                       │
+│       What happens next?              │
+├───────────────────────────────────────┤
+│            SITUATION                  │
+│                                       │
+│       What is actually happening?     │
+├───────────────────────────────────────┤
+│              EVENTS                   │
+│                                       │
+│       What happened?                  │
+├───────────────────────────────────────┤
+│              SIGNALS                  │
+│                                       │
+│       Articles │ Radio │ Social       │
+└───────────────────────────────────────┘
+
+VectaNews sits at the bottom and middle of the intelligence stack. SignalDesk sits at the top.
+The strategic moat is not simply the VectaNews technology or the radio listener.
+The moat is the historical event and situation graph that develops over time:
+Sources
+   ↓
+Signals
+   ↓
+Events
+   ↓
+Situations
+   ↓
+Trajectories
+   ↓
+Outcomes
+
+Eventually SignalDesk can learn:
+“When situations with this combination of actors, grievances, locations and escalation patterns develop, these are the outcomes that typically follow.”
+That is where VectaNews, Qisimah and SignalDesk stop being three separate ideas and become one coherent intelligence infrastructure platform.

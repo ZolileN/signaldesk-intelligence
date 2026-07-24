@@ -1,0 +1,1101 @@
+
+Yes. You are right. I have been repeatedly stopping at the end of each stage and asking whether we should do the next thing. That is inefficient for a project like this.
+From here, I will treat the SignalDesk work as one continuous product-design and research programme and deliver complete stages together rather than repeatedly asking for permission.
+I will now consolidate the work into a complete SignalDesk Intelligence Engine Blueprint covering:
+Situation discovery
+Event-first architecture
+Classification system
+Data science algorithms
+Situation detection
+Situation matching and merging
+Trajectory analysis
+Actor and causal analysis
+Exposure mapping
+Scenario generation
+Recommendation engine
+Human analyst workflow
+Vecta News + Qisimah integration
+Data model
+Technical architecture
+MVP scope
+Product interfaces
+Canonical use cases
+Competitive differentiation
+Commercial product structure
+
+SIGNALDESK INTELLIGENCE ENGINE
+The fundamental product
+SignalDesk continuously observes the world, detects meaningful changes, connects related events, identifies emerging situations, assesses their trajectory, maps their consequences to organisations, and recommends actions.
+The core loop is:
+OBSERVE
+   ↓
+DETECT
+   ↓
+CLASSIFY
+   ↓
+CONNECT
+   ↓
+UNDERSTAND
+   ↓
+ASSESS
+   ↓
+EXPOSE
+   ↓
+ACT
+
+Or, in the language of the eight questions:
+What is happening?
+        ↓
+Is it getting worse or better?
+        ↓
+Where?
+        ↓
+Who?
+        ↓
+Why?
+        ↓
+What happens next?
+        ↓
+How am I exposed?
+        ↓
+What should I do?
+
+
+1. The system must be event-first
+The system should not begin with:
+"Tell me everything about immigration."
+That creates a search engine.
+It should begin with:
+Something changed. What does it mean?
+Example:
+Source:
+Radio discussion
+
+Signal:
+"Residents are planning a demonstration."
+
+        ↓
+
+EVENT:
+Residents are mobilising for a demonstration.
+
+        ↓
+
+CONTEXT:
+Same actors previously organised around immigration concerns.
+
+        ↓
+
+SITUATION:
+Growing anti-immigration mobilisation.
+
+        ↓
+
+TRAJECTORY:
+Increasing political and social activity.
+
+        ↓
+
+EXPOSURE:
+Customer operates businesses in affected areas.
+
+        ↓
+
+RECOMMENDATION:
+Prepare operational and stakeholder response.
+
+This is the fundamental architecture.
+
+2. The Situation Detection Engine
+The platform receives information continuously.
+The first question is:
+Does this information contain a meaningful change in the real world?
+Not every piece of content does.
+Classification
+Every incoming item should initially be classified into:
+INFORMATION
+     │
+     ├── No meaningful change
+     │
+     ├── Background information
+     │
+     ├── Claim
+     │
+     ├── Event
+     │
+     ├── Emerging signal
+     │
+     └── Potential situation
+
+For example:
+Article
+"South Africa has high unemployment."
+Classification:
+Background information
+
+Article
+"Thousands of residents mobilise for a demonstration."
+Classification:
+Event
+
+Radio conversation
+"People in three neighbouring communities are discussing shutting down the roads next week."
+Classification:
+Emerging signal
+
+The last one may be more valuable than the first.
+
+3. The classification architecture
+The system should classify every signal across multiple dimensions.
+A. Signal type
+event
+claim
+opinion
+policy_change
+announcement
+threat
+mobilisation
+protest
+disruption
+accident
+conflict
+regulatory_change
+economic_change
+market_change
+
+
+B. Situation domain
+political
+social
+economic
+security
+regulatory
+environmental
+health
+infrastructure
+technology
+trade
+financial
+geopolitical
+
+A single event may belong to several domains.
+Example:
+Mining protest
+= Social
++ Political
++ Operational
++ Economic
+
+
+C. Impact type
+operational
+financial
+regulatory
+reputational
+security
+political
+social
+supply_chain
+market
+
+
+D. Temporal status
+historical
+ongoing
+emerging
+planned
+future
+resolved
+
+
+E. Geographic scope
+local
+municipal
+provincial
+national
+regional
+continental
+global
+
+This matters because:
+A local event may become a national situation.
+
+4. The data-science architecture
+We should not rely on one giant LLM prompt.
+The system should use a hybrid architecture.
+                RAW CONTENT
+                      ↓
+              ┌───────────────┐
+              │ NLP EXTRACTION│
+              └───────┬───────┘
+                      ▼
+              ┌───────────────┐
+              │ CLASSIFICATION│
+              └───────┬───────┘
+                      ▼
+              ┌───────────────┐
+              │ ENTITY         │
+              │ RESOLUTION     │
+              └───────┬────────┘
+                      ▼
+              ┌───────────────┐
+              │ EVENT          │
+              │ EXTRACTION     │
+              └───────┬────────┘
+                      ▼
+              ┌───────────────┐
+              │ SIMILARITY +   │
+              │ GRAPH ANALYSIS │
+              └───────┬────────┘
+                      ▼
+              ┌───────────────┐
+              │ SITUATION      │
+              │ DETECTION      │
+              └───────┬────────┘
+                      ▼
+              ┌───────────────┐
+              │ TRAJECTORY     │
+              │ ANALYSIS       │
+              └───────┬────────┘
+                      ▼
+              ┌───────────────┐
+              │ EXPOSURE       │
+              │ ANALYSIS       │
+              └───────────────┘
+
+
+5. The classification algorithms
+The system can use a combination of:
+Supervised classification
+For categories where we have labelled examples:
+Is this a protest?
+Is this a policy change?
+Is this an emerging threat?
+
+Models could include:
+Transformer classifiers.
+Fine-tuned language models.
+Gradient boosting on structured features.
+
+Zero-shot classification
+Useful at the beginning when we have limited labelled data.
+Example:
+Text:
+"The municipality has suspended approval of the project."
+
+Possible labels:
+- Regulatory change
+- Political event
+- Operational disruption
+- Financial event
+
+The model ranks the categories.
+
+Embedding similarity
+Every signal becomes a vector:
+Signal A → [0.12, 0.84, 0.32...]
+Signal B → [0.13, 0.81, 0.35...]
+
+Similarity helps determine:
+Are these two signals about the same underlying event or situation?
+
+Graph algorithms
+The system can build:
+Actor
+  ↓
+Event
+  ↓
+Location
+  ↓
+Organisation
+  ↓
+Situation
+
+Then analyse:
+Central actors.
+New connections.
+Rapidly growing clusters.
+Geographic expansion.
+Relationship changes.
+
+6. Situation discovery
+The platform should use multiple detection mechanisms.
+Method 1 — Event accumulation
+Event
+  ↓
+Related Event
+  ↓
+Related Event
+  ↓
+Pattern
+  ↓
+Situation
+
+Example:
+Community grievance
+    ↓
+Public meeting
+    ↓
+Mobilisation
+    ↓
+Road blockade
+
+The system detects:
+A developing situation.
+
+Method 2 — Anomaly detection
+The system learns normal activity.
+Example:
+Normal:
+5 mentions per week
+
+Current:
+500 mentions in 48 hours
+
+This is an anomaly.
+Potential situation:
+New mobilisation
+
+This is particularly valuable for:
+Social tensions.
+Political narratives.
+Company crises.
+Security incidents.
+
+Method 3 — Entity activity spikes
+Example:
+Company X:
+Normal mentions: 20/month
+
+Current:
+300 mentions/week
+
+This could indicate:
+Crisis.
+Product failure.
+Regulatory action.
+Political controversy.
+Acquisition.
+Public mobilisation.
+
+Method 4 — Geographic clustering
+Event A
+    ↓ 10 km
+Event B
+    ↓ 5 km
+Event C
+
+The system identifies a geographical cluster.
+This is useful for:
+Protests.
+Crime.
+Infrastructure failures.
+Disease outbreaks.
+Weather events.
+Community unrest.
+
+Method 5 — Actor network expansion
+Example:
+Initially:
+Community → Project
+
+Then:
+Community → Project
+Political party → Community
+Union → Community
+Media → Political party
+Government → Situation
+
+The network is expanding.
+That is itself a trajectory indicator.
+
+7. Situation matching
+The most important algorithm may be:
+Does this new event belong to an existing situation?
+The matching model should combine:
+Semantic similarity
++
+Entity overlap
++
+Location overlap
++
+Time proximity
++
+Event type
++
+Causal relationship
+
+Example:
+New Event:
+Community protest against Solar Project Alpha
+
+Existing situation:
+Growing opposition to Solar Project Alpha
+
+The model evaluates:
+Entity overlap:       0.95
+Location overlap:     0.98
+Semantic similarity:  0.91
+Time proximity:       0.84
+Event type:           0.90
+
+Result:
+Situation Match:
+0.93
+
+The event is added to the existing situation.
+
+8. Situation merging
+The system will sometimes create two separate situations:
+Situation A:
+Anti-immigration protest in Johannesburg
+
+Situation B:
+Anti-immigration mobilisation in Gauteng
+
+The system should detect:
+Shared actors
+Shared narratives
+Geographic proximity
+Temporal relationship
+
+Then suggest:
+These situations may be related. Merge?
+The analyst can:
+Merge
+Keep separate
+Create parent situation
+
+This is important because complex situations often exist at multiple levels.
+Parent Situation:
+National anti-immigration mobilisation
+
+Child Situation:
+Johannesburg protests
+
+Child Situation:
+Gauteng business disruption
+
+Child Situation:
+Political response
+
+This creates a hierarchy.
+
+9. Situation hierarchy
+GLOBAL SITUATION
+       ↓
+REGIONAL SITUATION
+       ↓
+NATIONAL SITUATION
+       ↓
+LOCAL SITUATION
+       ↓
+INDIVIDUAL EVENT
+
+Example:
+US–Iran conflict
+      ↓
+Global oil disruption
+      ↓
+Fuel price increases
+      ↓
+South African inflation pressure
+      ↓
+Transport cost increase
+      ↓
+Company operating cost
+
+This is one of the strongest potential capabilities of SignalDesk.
+It can model:
+How does something happening far away eventually affect me?
+
+10. Trajectory analysis
+The system should track situations across multiple dimensions.
+Core dimensions
+Activity
+Actor involvement
+Geographic spread
+Institutional response
+Operational impact
+Economic impact
+Narrative amplification
+
+Each dimension has:
+Current level
+Direction
+Velocity
+Confidence
+
+Example:
+Activity:
+High ↑
+
+Actor involvement:
+High ↑↑
+
+Geographic spread:
+Medium ↑
+
+Institutional response:
+High ↑
+
+Operational impact:
+Medium ↑
+
+The system can then state:
+The situation is accelerating primarily through increased actor involvement and geographic spread.
+This is much more useful than:
+Risk score: 82.
+
+11. Velocity matters
+Two situations can have the same current intensity but very different trajectories.
+Situation A
+Activity:
+80 → 80 → 80 → 80
+
+Stable but serious.
+Situation B
+Activity:
+10 → 20 → 40 → 80
+
+Rapidly escalating.
+Situation B may be more urgent.
+Therefore:
+Current intensity
++
+Rate of change
+=
+Trajectory
+
+This is a fundamental data-science feature.
+
+12. The "getting worse or better" engine
+The platform should calculate:
+Direction:
+Improving
+Stable
+Worsening
+Uncertain
+
+But it should explain the assessment.
+Example:
+Worsening
+Because:
++ Number of involved actors increased
++ Geographic footprint expanded
++ Institutional response intensified
++ Operational disruption increased
+
+And perhaps:
+- No significant physical violence detected
+
+This creates a nuanced assessment.
+
+13. Driver analysis
+The system should distinguish between:
+Direct trigger
+What immediately caused the event?
+Structural driver
+What underlying condition makes the situation possible?
+Amplifier
+What makes it spread faster?
+Constraint
+What prevents further escalation?
+Example:
+Situation:
+Anti-immigration mobilisation
+
+Possible structure
+Structural drivers:
+Unemployment
+Economic insecurity
+Immigration concerns
+
+Trigger:
+Specific political event or announcement
+
+Amplifiers:
+Social media
+Political actors
+Misinformation
+
+Constraints:
+Police intervention
+Political compromise
+Community engagement
+
+This creates a much richer explanation of causality.
+
+14. Causal graph
+Economic insecurity
+        ↓
+Public frustration
+        ↓
+Political narrative
+        ↓
+Online mobilisation
+        ↓
+Physical mobilisation
+        ↓
+Business disruption
+        ↓
+Government response
+
+The system should not claim:
+"Economic insecurity caused the protest."
+Unless evidence supports it.
+Instead:
+Economic insecurity appears to be a contributing structural driver.
+The platform should distinguish:
+Observed
+Inferred
+Reported
+Disputed
+Unknown
+
+This is essential for analytical integrity.
+
+15. The Exposure Engine
+The exposure engine is where SignalDesk becomes commercially powerful.
+The organisation defines:
+Assets
+Locations
+People
+Projects
+Suppliers
+Customers
+Dependencies
+Markets
+
+The system continuously asks:
+Does this situation intersect with any of these?
+Exposure channels
+Geographic
+Operational
+Financial
+Regulatory
+Political
+Reputational
+Supply-chain
+Workforce
+Security
+Strategic
+
+Example:
+Situation:
+Port disruption
+
+Mining company:
+Export dependency
+
+Result:
+Direct operational exposure
+
+Another:
+Situation:
+Political controversy
+
+Bank:
+No physical asset exposure
+
+Result:
+Potential reputational exposure
+
+
+16. Exposure is a graph
+Situation
+   ↓
+Location
+   ↓
+Asset
+   ↓
+Dependency
+   ↓
+Business process
+   ↓
+Financial impact
+
+Example:
+Political crisis
+      ↓
+Government sanctions
+      ↓
+Supplier country
+      ↓
+Equipment supplier
+      ↓
+Solar project
+      ↓
+Construction delay
+      ↓
+Revenue delay
+
+This is the kind of second-order intelligence that standard media monitoring does not provide.
+
+17. Scenario engine
+The platform should generate scenarios based on:
+Current trajectory
+Historical patterns
+Known drivers
+Actor behaviour
+Institutional response
+Comparable situations
+
+The scenarios should not be presented as certainty.
+Example:
+Scenario A:
+De-escalation
+
+Scenario B:
+Localised continuation
+
+Scenario C:
+Geographic spread
+
+Scenario D:
+Operational disruption
+
+Each scenario has:
+Likelihood band
+Time horizon
+Supporting indicators
+Contradicting indicators
+
+
+18. Leading indicators
+This is one of the most valuable parts of the system.
+For every scenario:
+What would we expect to see before it happens?
+Example:
+Scenario: Geographic spread
+Leading indicators:
+New locations mentioned
+New local organisers
+New political endorsements
+New mobilisation hashtags
+Similar incidents in adjacent areas
+
+The platform can then say:
+Three of five geographic-spread indicators are now present.
+That is genuinely useful early warning.
+
+19. Recommendation engine
+The platform should not automatically provide generic advice.
+Recommendations should be linked to:
+Situation
+Exposure
+Trajectory
+Scenario
+
+Example:
+Exposure:
+High
+
+Trajectory:
+Worsening
+
+Scenario:
+Operational disruption
+
+Recommendation:
+Initiate contingency planning for affected facilities.
+
+Rationale:
+The situation has moved from narrative mobilisation to physical disruption in locations near company assets.
+
+The recommendation should answer:
+WHAT?
+WHY?
+WHEN?
+WHO?
+
+
+20. The SignalDesk intelligence stack
+The full architecture becomes:
+┌────────────────────────────────────┐
+│             WORLD                  │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│           DATA SOURCES             │
+│ News | Radio | Government | Social │
+│ Courts | Markets | Documents       │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│          SIGNAL EXTRACTION         │
+│ Claims | Events | Entities         │
+│ Locations | Policies               │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│          EVENT INTELLIGENCE        │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│       SITUATION DETECTION          │
+│ Clustering | Anomalies | Networks  │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│       SITUATION INTELLIGENCE       │
+│ Drivers | Actors | Trajectory      │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│        SCENARIO INTELLIGENCE       │
+│ Futures | Indicators | Outcomes    │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│          EXPOSURE ENGINE           │
+│ Assets | Dependencies | Impacts    │
+└───────────────────┬────────────────┘
+                    ▼
+┌────────────────────────────────────┐
+│        DECISION INTELLIGENCE       │
+│ Actions | Priorities | Response    │
+└────────────────────────────────────┘
+
+
+21. Vecta News + Qisimah + SignalDesk
+The three products form a natural architecture:
+Vecta News
+The discovery layer
+What is being published?
+
+
+Qisimah Audio Insights
+The listening layer
+What is being said?
+
+Especially:
+Radio.
+Interviews.
+Public meetings.
+Local-language conversations.
+
+SignalDesk
+The intelligence layer
+What does it mean?
+
+Combined:
+                VECTA
+              SEE THE WORLD
+                   │
+                   ▼
+                QISIMAH
+             HEAR THE WORLD
+                   │
+                   ▼
+              SIGNALDESK
+           UNDERSTAND THE WORLD
+                   │
+                   ▼
+               CUSTOMER
+             ACT ON THE WORLD
+
+This is a coherent platform family.
+
+22. The African advantage
+The most important potential differentiation is not simply:
+"We use AI."
+Everybody will use AI.
+The differentiation is:
+African information density
++
+Local media
++
+Radio
++
+Local languages
++
+Government sources
++
+Regional context
++
+Entity knowledge
++
+Situation history
+
+The system can eventually understand that:
+"Umlungu"
+"White person"
+"Foreign national"
+"Amakwerekwere"
+
+may have different meanings depending on context, language and political usage.
+This is where an Africa-first intelligence platform can develop genuinely differentiated contextual intelligence.
+
+23. The product's competitive position
+SignalDesk would sit at the intersection of:
+Media Intelligence
+        +
+Market Intelligence
+        +
+Political Risk
+        +
+Geopolitical Intelligence
+        +
+Corporate Intelligence
+        +
+AI
+
+But the product should not sell itself as five different things.
+The positioning should remain:
+Understand what is changing in the world before it becomes a problem for your organisation.
+
+24. The MVP
+The first real version should contain:
+Data
+News
+Government documents
+RSS
+Selected web sources
+Qisimah audio
+
+Intelligence
+Entity extraction
+Event extraction
+Claim extraction
+Situation detection
+Situation matching
+Trajectory assessment
+
+Customer layer
+Organisation
+Assets
+Locations
+Exposure
+
+Product
+Situation feed
+Situation detail
+Timeline
+Map
+Actor network
+Trajectory
+Exposure
+Evidence
+
+That is enough to prove the central product.
+
+25. The first technical implementation
+Frontend:
+Next.js + TypeScript
+
+API:
+FastAPI
+
+Database:
+PostgreSQL
+
+Geospatial:
+PostGIS
+
+Vector search:
+pgvector
+
+Queue:
+Redis / Celery or PostgreSQL job queue
+
+Object storage:
+S3-compatible
+
+AI:
+LLM extraction layer
+Embedding model
+Classifier models
+Rule engine
+
+Analytics:
+Python
+scikit-learn
+NetworkX
+
+The system should be modular enough that AI models can be replaced.
+The intelligence architecture must not become dependent on a single model provider.
+
+26. The complete MVP data flow
+                   CONTENT
+                       │
+                       ▼
+                   INGESTION
+                       │
+                       ▼
+                NORMALISATION
+                       │
+                       ▼
+                AI EXTRACTION
+                       │
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+     ENTITY          EVENT           CLAIM
+   EXTRACTION      EXTRACTION      EXTRACTION
+        │              │              │
+        └──────────────┼──────────────┘
+                       ▼
+                ENTITY RESOLUTION
+                       │
+                       ▼
+               SITUATION MATCHING
+                       │
+            ┌──────────┴──────────┐
+            ▼                     ▼
+    EXISTING SITUATION       NEW SITUATION
+            │                     │
+            └──────────┬──────────┘
+                       ▼
+              TRAJECTORY ENGINE
+                       │
+                       ▼
+                 DRIVER ANALYSIS
+                       │
+                       ▼
+                SCENARIO ENGINE
+                       │
+                       ▼
+                 EXPOSURE ENGINE
+                       │
+                       ▼
+                RECOMMENDATION
+
+
+27. The actual strategic thesis
+The platform is not fundamentally competing with news companies.
+It is competing with the fragmented process organisations currently use:
+Google searches
+News alerts
+Bloomberg
+Social listening
+WhatsApp groups
+Consultants
+Analysts
+Excel
+Email
+Human memory
+
+SignalDesk's value proposition is:
+Instead of asking your analysts to manually reconstruct what is happening, SignalDesk maintains the evolving situation model for you.
+That is the real opportunity.
+
+28. The single most important product principle
+Every output must be able to answer:
+Why should I care?
+The platform should never stop at:
+"This happened."
+It must continue:
+This happened.
+        ↓
+It is connected to this.
+        ↓
+It is getting worse/better because of this.
+        ↓
+It could develop in these ways.
+        ↓
+You are exposed through these channels.
+        ↓
+These actions may reduce your exposure.
+
+That is the complete SignalDesk product.
+And yes—going forward, I will stop ending every response by asking you to approve the next stage. For this project, I will provide the full connected analysis and build the architecture forward in one coherent sequence.

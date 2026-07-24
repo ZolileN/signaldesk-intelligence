@@ -1,0 +1,572 @@
+
+SIGNALDESK AFRICA
+Canonical Intelligence Data Model and Event/Situation Ontology
+Version: 1.0Status: Foundational Technical SpecificationPurpose: Define the canonical objects, relationships, classifications and lifecycle states used by SignalDesk Africa.
+
+1. Design Principle
+Every source in SignalDesk must eventually produce a common intelligence representation.
+SOURCE
+   ↓
+OBSERVATION
+   ↓
+CLAIM
+   ↓
+ENTITY
+   ↓
+EVENT
+   ↓
+SITUATION
+   ↓
+TRAJECTORY
+   ↓
+EXPOSURE
+   ↓
+ACTION
+VectaNews, radio sensors, social monitoring and future data sources must not create isolated data models.
+They must all feed the same canonical intelligence layer.
+
+2. Core Domain Objects
+The canonical model consists of:
+Source
+Observation
+Claim
+Entity
+Event
+Situation
+Relationship
+Evidence
+Trajectory
+Exposure
+Impact
+Recommendation
+Alert
+Customer
+Asset
+
+3. Source
+A source is an origin of information.
+Source Types
+NEWS_PUBLICATION
+RADIO_STATION
+TELEVISION_STATION
+SOCIAL_ACCOUNT
+GOVERNMENT_BODY
+CORPORATION
+REGULATOR
+RESEARCH_INSTITUTION
+NGO
+PUBLIC_DATASET
+DOCUMENT
+CUSTOMER_SOURCE
+Source Schema
+Source
+├── id
+├── name
+├── source_type
+├── country
+├── region
+├── language
+├── url
+├── owner
+├── political_context
+├── historical_reliability_score
+├── active
+├── created_at
+└── updated_at
+A source's reliability must be dynamic rather than permanently assigned.
+
+4. Observation
+An observation is the raw information captured from a source.
+Examples:
+A news article.
+A radio segment.
+A social media post.
+A government document.
+A company statement.
+Observation
+├── id
+├── source_id
+├── content_type
+├── raw_content
+├── title
+├── url
+├── published_at
+├── captured_at
+├── language
+├── location
+├── media_reference
+├── transcript
+├── hash
+└── provenance
+The original observation must be preserved.
+The system must never destroy the original evidence when generating derived intelligence.
+
+5. Claim
+A claim is a proposition expressed within an observation.
+Example:
+“Residents will block the road tomorrow.”
+Claim
+├── id
+├── observation_id
+├── claim_text
+├── claimant_entity_id
+├── claim_type
+├── temporal_reference
+├── geographic_reference
+├── verification_status
+├── confidence_score
+├── supporting_evidence
+└── contradictory_evidence
+Claim Types
+FACTUAL_ASSERTION
+ALLEGATION
+RUMOUR
+PREDICTION
+OPINION
+NARRATIVE
+DENIAL
+WARNING
+COMMITMENT
+
+6. Entity
+An entity is any identifiable actor, place, object or institution.
+Entity Types
+PERSON
+ORGANISATION
+COMPANY
+GOVERNMENT
+POLITICAL_PARTY
+NGO
+COMMUNITY
+LOCATION
+COUNTRY
+CITY
+MUNICIPALITY
+PROVINCE
+ASSET
+MINE
+FACILITY
+ROAD
+PORT
+AIRPORT
+POLICY
+LAW
+REGULATION
+PRODUCT
+EVENT_ORGANISATION
+Entity Schema
+Entity
+├── id
+├── canonical_name
+├── entity_type
+├── aliases
+├── country
+├── geographic_coordinates
+├── description
+├── external_identifiers
+├── confidence_score
+└── metadata
+
+7. Entity Resolution
+The same real-world entity may appear under multiple names.
+"Cyril Ramaphosa"
+"President Ramaphosa"
+"Ramaphosa"
+"CR"
+The system should resolve them to:
+CANONICAL ENTITY:
+Cyril Matamela Ramaphosa
+The entity resolution pipeline:
+RAW MENTION
+     ↓
+NORMALISATION
+     ↓
+ALIAS MATCHING
+     ↓
+CONTEXT ANALYSIS
+     ↓
+ENTITY RESOLUTION
+     ↓
+CANONICAL ENTITY
+The system must support:
+Aliases.
+Acronyms.
+Spelling variants.
+Transliteration.
+Multilingual names.
+Titles.
+Informal names.
+
+8. Event
+An event represents a discrete occurrence.
+Examples:
+Protest.
+Policy announcement.
+Strike.
+Court ruling.
+Investment.
+Election.
+Security incident.
+Company closure.
+Road blockade.
+Event Schema
+Event
+├── id
+├── event_type
+├── title
+├── description
+├── start_time
+├── end_time
+├── location
+├── actors
+├── affected_entities
+├── claims
+├── evidence
+├── severity
+├── confidence
+├── status
+├── parent_situation_id
+└── created_at
+
+9. Event Taxonomy
+Political
+ELECTION
+POLITICAL_STATEMENT
+POLITICAL_APPOINTMENT
+POLICY_ANNOUNCEMENT
+GOVERNMENT_DECISION
+DIPLOMATIC_EVENT
+SANCTION
+Economic
+INVESTMENT
+DIVESTMENT
+MARKET_EVENT
+BUSINESS_CLOSURE
+BANKRUPTCY
+PRICE_CHANGE
+TRADE_EVENT
+Social
+PROTEST
+COMMUNITY_GRIEVANCE
+PUBLIC_MOBILISATION
+STRIKE
+CIVIL_UNREST
+Security
+VIOLENCE
+CRIME
+TERRORISM
+CONFLICT
+THREAT
+SECURITY_DEPLOYMENT
+Infrastructure
+POWER_OUTAGE
+ROAD_CLOSURE
+PORT_DISRUPTION
+NETWORK_FAILURE
+INFRASTRUCTURE_DAMAGE
+Environmental
+FLOOD
+DROUGHT
+FIRE
+POLLUTION
+ENVIRONMENTAL_INCIDENT
+Corporate
+EXECUTIVE_CHANGE
+MERGER
+ACQUISITION
+PRODUCT_LAUNCH
+OPERATIONAL_DISRUPTION
+LABOUR_EVENT
+
+10. Event Relationships
+Events must be connected through relationships.
+CAUSES
+TRIGGERS
+FOLLOWS
+ESCALATES
+DE_ESCALATES
+CONTRADICTS
+CORROBORATES
+PART_OF
+PRECEDES
+RESULTS_IN
+RESPONDS_TO
+Example:
+Policy Announcement
+        ↓ triggers
+Community Protest
+        ↓ results in
+Road Blockade
+        ↓ causes
+Operational Disruption
+        ↓ triggers
+Government Intervention
+
+11. Situation
+A situation is a collection of related events forming a meaningful developing condition.
+An event is:
+Something happened.
+A situation is:
+A condition is developing.
+Example:
+Community Complaint
+       +
+Public Meeting
+       +
+Protest Announcement
+       +
+Road Blockade
+       +
+Political Intervention
+       ↓
+COMMUNITY-INDUSTRY CONFLICT SITUATION
+Situation Schema
+Situation
+├── id
+├── title
+├── summary
+├── situation_type
+├── status
+├── trajectory
+├── severity
+├── confidence
+├── start_time
+├── last_updated
+├── geographic_scope
+├── primary_actors
+├── drivers
+├── related_events
+├── affected_entities
+├── potential_outcomes
+├── exposure_assessments
+└── recommendations
+
+12. Situation Types
+POLITICAL_CRISIS
+SOCIAL_UNREST
+COMMUNITY_CONFLICT
+REGULATORY_CHANGE
+MARKET_DISRUPTION
+INVESTMENT_OPPORTUNITY
+SECURITY_SITUATION
+ENVIRONMENTAL_CRISIS
+INFRASTRUCTURE_DISRUPTION
+REPUTATIONAL_CRISIS
+PUBLIC_HEALTH_SITUATION
+DIPLOMATIC_TENSION
+SUPPLY_CHAIN_DISRUPTION
+
+13. Situation Lifecycle
+DORMANT
+    ↓
+EMERGING
+    ↓
+DEVELOPING
+    ↓
+ESCALATING
+    ↓
+CRITICAL
+    ↓
+STABILISING
+    ↓
+DE_ESCALATING
+    ↓
+RESOLVED
+    ↓
+HISTORICAL
+Situations may also:
+MERGE
+SPLIT
+RE_EMERGE
+MUTATE
+
+14. Trajectory
+A situation's trajectory represents its direction.
+STABLE
+IMPROVING
+DETERIORATING
+ESCALATING
+VOLATILE
+UNCERTAIN
+Trajectory is derived from:
+Event Frequency
++
+Severity
++
+Actor Expansion
++
+Geographic Expansion
++
+Institutional Response
++
+Operational Consequences
++
+Narrative Intensity
+
+15. Drivers
+Drivers explain why a situation is happening.
+The causal structure:
+STRUCTURAL CONDITION
+        ↓
+UNDERLYING GRIEVANCE
+        ↓
+TRIGGER
+        ↓
+CATALYST
+        ↓
+EVENT
+        ↓
+REACTION
+        ↓
+CONSEQUENCE
+Example:
+Unemployment
+      ↓
+Community Frustration
+      ↓
+Company Expansion Announcement
+      ↓
+Political Statement
+      ↓
+Protest
+      ↓
+Police Deployment
+      ↓
+Operational Disruption
+
+16. Evidence
+Every intelligence conclusion must be traceable.
+Situation
+    ↓
+Event
+    ↓
+Claim
+    ↓
+Observation
+    ↓
+Source
+Evidence types:
+DIRECT
+CORROBORATING
+INDIRECT
+CONTRADICTORY
+HISTORICAL
+ANALYTICAL
+
+17. Confidence
+Confidence is not the same as importance.
+A situation may be:
+High Severity
+Low Confidence
+or:
+Low Severity
+High Confidence
+The system must maintain separate dimensions.
+Confidence
+Severity
+Urgency
+Exposure
+
+18. Exposure
+Exposure maps a situation to a customer.
+Situation
+    ↓
+Affected Entities
+    ↓
+Customer Entities
+    ↓
+Customer Assets
+    ↓
+Exposure
+Exposure types:
+DIRECT
+INDIRECT
+FINANCIAL
+OPERATIONAL
+REGULATORY
+REPUTATIONAL
+POLITICAL
+SECURITY
+SUPPLY_CHAIN
+MARKET
+
+19. Impact
+Impact describes the potential consequence for the customer.
+Impact
+├── type
+├── severity
+├── probability
+├── time_horizon
+├── affected_asset
+├── evidence
+└── confidence
+
+20. Recommendation
+Recommendations must be customer-specific.
+Situation
+    ↓
+Exposure
+    ↓
+Impact
+    ↓
+Customer Role
+    ↓
+Recommended Action
+Example:
+Investor:
+Review portfolio exposure.
+
+Mining Company:
+Activate stakeholder engagement.
+
+Municipality:
+Prepare contingency response.
+
+Communications Department:
+Prepare public messaging.
+
+21. Alert
+An alert is a situation requiring customer attention.
+Alert priority should consider:
+Severity
+×
+Urgency
+×
+Exposure
+×
+Confidence
+×
+Novelty
+Alert levels:
+INFORMATION
+WATCH
+ELEVATED
+HIGH
+CRITICAL
+
+22. Canonical Relationship Model
+The central relationship graph is:
+SOURCE
+   ↓ produces
+OBSERVATION
+   ↓ contains
+CLAIM
+   ↓ references
+ENTITY
+   ↓ participates in
+EVENT
+   ↓ connected to
+EVENT
+   ↓ forms
+SITUATION
+   ↓ affects
+ENTITY
+   ↓ owned/operated by
+CUSTOMER
+   ↓ creates
+EXPOSURE
+   ↓ creates
+IMPACT
+   ↓ produces
+RECOMMENDATION
+This is the canonical intelligence model for SignalDesk Africa.

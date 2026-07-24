@@ -1,0 +1,533 @@
+
+SignalDesk Radio Stream Sensor & Data Flow
+┌──────────────────────────────────────────────────────────────────┐
+│                        RADIO ECOSYSTEM                           │
+│                                                                  │
+│  FM/AM → Online Stream → Icecast / Shoutcast / HLS / AAC / MP3   │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    1. STATION REGISTRY                           │
+│                                                                  │
+│  Station │ Country │ Region │ Language │ Timezone │ Stream URL   │
+│  Programme Schedule │ News Times │ Historical Behaviour          │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│              2. PROGRAMME & NEWS CLOCK ENGINE                    │
+│                                                                  │
+│  Learns:                                                         │
+│  • Top-of-the-hour bulletins                                     │
+│  • Half-hour bulletins                                           │
+│  • Scheduled news programmes                                     │
+│  • Political programmes                                           │
+│  • Talk shows                                                     │
+│  • Call-in programmes                                             │
+│  • Unexpected/breaking broadcasts                                 │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                 3. RADIO INTELLIGENCE SCHEDULER                  │
+│                                                                  │
+│  Decides:                                                        │
+│  • When to listen                                                │
+│  • How long to listen                                            │
+│  • What processing policy to apply                               │
+│  • Which stations receive priority                               │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    4. STREAM LISTENER                            │
+│                                                                  │
+│  Persistent connection                                            │
+│  FFmpeg capture                                                   │
+│  Stream health monitoring                                         │
+│  Automatic reconnection                                            │
+│  Rolling audio buffer                                             │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                   5. AUDIO SEGMENTATION                          │
+│                                                                  │
+│       Live Stream → 15–30 second rolling audio segments          │
+│                                                                  │
+│  Each segment receives:                                           │
+│  Station ID │ Timestamp │ Programme │ Location │ Priority         │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                 6. AUDIO CLASSIFICATION                          │
+│                                                                  │
+│  Is this:                                                         │
+│                                                                  │
+│  Music │ Speech │ Advertisement │ Jingle │ Silence │ News         │
+│  Interview │ Call-in │ Sports │ Weather │ Traffic                 │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+              ┌────────────────┴────────────────┐
+              │                                 │
+              ▼                                 ▼
+        LOW VALUE AUDIO                    RELEVANT AUDIO
+              │                                 │
+              ▼                                 ▼
+          Discard /                    Combine segments into
+          minimal storage              coherent speech block
+                                                │
+                                                ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                   7. SPEECH INTELLIGENCE                         │
+│                                                                  │
+│  • Speech-to-text                                                │
+│  • Language detection                                             │
+│  • Translation where required                                     │
+│  • Speaker diarisation                                            │
+│  • Programme/presenter identification                             │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                   8. CONTENT INTELLIGENCE                         │
+│                                                                  │
+│  Extract:                                                        │
+│                                                                  │
+│  People │ Organisations │ Companies │ Places │ Governments        │
+│  Claims │ Topics │ Incidents │ Numbers │ Dates │ Locations         │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    9. EVENT DETECTION                             │
+│                                                                  │
+│  Converts broadcast content into structured events:              │
+│                                                                  │
+│  Protest                                                       │
+│  Strike                                                        │
+│  Political announcement                                        │
+│  Government decision                                            │
+│  Business disruption                                            │
+│  Community grievance                                            │
+│  Security incident                                              │
+│  Market development                                             │
+│  Emerging controversy                                           │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    10. SITUATION ENGINE                          │
+│                                                                  │
+│  Is this:                                                        │
+│                                                                  │
+│  • A new situation?                                              │
+│  • An update to an existing situation?                           │
+│  • An escalation?                                                │
+│  • A de-escalation?                                              │
+│  • A related situation elsewhere?                                │
+└──────────────────────────────┬───────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    11. SIGNALDESK INTELLIGENCE                   │
+│                                                                  │
+│  1. What is happening?                                           │
+│  2. Is it getting worse or better?                               │
+│  3. Where is it happening?                                       │
+│  4. Who is involved?                                             │
+│  5. What is driving it?                                          │
+│  6. What happens next?                                           │
+│  7. How am I exposed?                                            │
+│  8. What should I do?                                            │
+└──────────────────────────────────────────────────────────────────┘
+
+
+The Core Data Flow
+The entire process can be simplified to:
+RADIO STREAM
+     ↓
+AUDIO
+     ↓
+SEGMENT
+     ↓
+CLASSIFY
+     ↓
+SPEECH
+     ↓
+TRANSCRIBE
+     ↓
+EXTRACT
+     ↓
+EVENT
+     ↓
+SITUATION
+     ↓
+TRAJECTORY
+     ↓
+EXPOSURE
+     ↓
+ACTION
+
+This is the fundamental transformation:
+Unstructured audio → structured intelligence → decision support
+
+The Three Listening Modes
+The most important architectural feature is that SignalDesk should not have only one listening mode.
+1. Continuous Awareness
+The system remains connected to the stream.
+Purpose:
+Maintain stream health.
+Detect unexpected speech.
+Detect breaking news.
+Monitor unusual broadcasts.
+Identify changes in programming.
+Stream
+  ↓
+Low-cost audio monitoring
+  ↓
+Unexpected signal?
+
+If something unusual occurs, the system can activate deeper processing.
+
+2. Scheduled Intelligence Listening
+This is based on the station's News Clock.
+Example:
+11:57 → Begin high-priority capture
+12:00 → Expected news bulletin
+12:00–12:15 → Full intelligence processing
+12:15 → Extract stories and events
+
+The same applies to:
+10:00
+10:30
+11:00
+11:30
+12:00
+12:30
+
+depending on the station.
+The important thing is that SignalDesk knows:
+“This is when important information is likely to be broadcast.”
+
+3. Adaptive Event-Triggered Listening
+This is the most powerful mode.
+Suppose a 10:00 news bulletin says:
+A community has threatened to shut down a major road tomorrow.
+SignalDesk detects:
+Potential Situation:
+Community X → Road Shutdown Threat
+
+The system then increases monitoring:
+Community X
+Road
+Municipality
+Political actors
+Organisers
+Related companies
+
+The next time these entities are mentioned on radio, SignalDesk gives the audio higher priority.
+Normal Station Monitoring
+          ↓
+Potential Event Detected
+          ↓
+Entity Watchlist Created
+          ↓
+Adaptive Monitoring
+          ↓
+More Evidence
+          ↓
+Situation Confidence Increases
+
+This is where the system moves beyond passive monitoring.
+
+The Station's News Clock
+The News Clock should become a central data model.
+For every station:
+Station
+│
+├── News Clock
+│   ├── 00:00
+│   ├── 00:30
+│   ├── 01:00
+│   ├── 01:30
+│   └── ...
+│
+├── Programme Schedule
+│
+├── Language Profile
+│
+├── Regional Coverage
+│
+└── Intelligence Profile
+
+The News Clock should be:
+Initially configured
+From:
+Station schedules.
+Public programme information.
+Manual configuration.
+Station partnerships.
+Then automatically learned
+From actual broadcasts.
+For example:
+Expected news: 12:00
+
+Observed:
+Day 1 → 12:01
+Day 2 → 12:00
+Day 3 → 12:02
+Day 4 → 12:00
+Day 5 → 12:01
+
+SignalDesk learns:
+Expected Window: 11:59–12:03
+Confidence: 96%
+
+This creates an intelligent, self-correcting scheduler.
+
+The Radio Data Model
+The data should not simply be:
+Audio file → Transcript
+
+That is too basic for SignalDesk.
+The data model should look more like:
+Station
+   ↓
+Programme
+   ↓
+Broadcast Session
+   ↓
+Audio Segment
+   ↓
+Speech Segment
+   ↓
+Transcript
+   ↓
+Claim
+   ↓
+Entity
+   ↓
+Event
+   ↓
+Situation
+   ↓
+Evidence
+
+For example:
+Station:
+Radio X
+
+Programme:
+Morning News
+
+Broadcast:
+2026-07-22 10:00 SAST
+
+Audio Segment:
+10:03:12–10:04:47
+
+Transcript:
+"Residents in ..."
+
+Entities:
+Community X
+Municipality Y
+Company Z
+
+Claim:
+Residents threaten road blockade.
+
+Event:
+Potential protest mobilisation.
+
+Situation:
+Growing opposition to municipal decision.
+
+Trajectory:
+Escalating.
+
+Evidence:
+Radio X, 10:03 SAST.
+
+That is a proper intelligence data chain.
+
+The Evidence Chain Is Critical
+Every intelligence conclusion should be traceable back to its source.
+Situation
+    ↓
+Event
+    ↓
+Claim
+    ↓
+Transcript
+    ↓
+Audio Clip
+    ↓
+Radio Station
+    ↓
+Timestamp
+
+This gives SignalDesk:
+Source provenance.
+Auditability.
+Analyst confidence.
+Evidence verification.
+A user should be able to see:
+Why did SignalDesk conclude this situation is escalating?
+And receive:
+Evidence 1:
+Radio broadcast
+
+Evidence 2:
+News article
+
+Evidence 3:
+Government statement
+
+Evidence 4:
+Social discussion
+
+Evidence 5:
+Historical trend
+
+The radio stream is therefore not just data.
+It is evidence.
+
+How the Radio Sensor Feeds the Wider SignalDesk Platform
+The radio pipeline should not exist in isolation.
+It feeds the Unified Situation Engine.
+                   ┌───────────────┐
+                    │ RADIO SENSOR  │
+                    └───────┬───────┘
+                            │
+┌───────────────┐           │           ┌───────────────┐
+│ NEWS SOURCES  │───────────┼───────────│ SOCIAL SIGNALS│
+└───────────────┘           │           └───────────────┘
+                            │
+                    ┌───────▼───────┐
+                    │  EVENT LAYER  │
+                    └───────┬───────┘
+                            │
+                    ┌───────▼───────┐
+                    │   SITUATION   │
+                    │     ENGINE    │
+                    └───────┬───────┘
+                            │
+                    ┌───────▼───────┐
+                    │   TRAJECTORY  │
+                    └───────┬───────┘
+                            │
+                    ┌───────▼───────┐
+                    │    EXPOSURE   │
+                    └───────┬───────┘
+                            │
+                    ┌───────▼───────┐
+                    │    ACTION     │
+                    └───────────────┘
+
+For example:
+RADIO:
+Community complaints
+
+NEWS:
+Company announces operational delay
+
+SOCIAL:
+Residents organise
+
+GOVERNMENT:
+Municipality announces emergency meeting
+
+        ↓
+
+SIGNALDESK
+
+Situation:
+Potential escalation of community opposition
+to Company X's operations.
+
+Trajectory:
+Worsening.
+
+Exposure:
+Company X, municipality, investors, supply chain.
+
+Next likely development:
+Protest / operational disruption / political intervention.
+
+That is the product.
+
+The Key Design Principle
+The system should not ask:
+“Should we transcribe this audio?”
+It should ask:
+“Does this audio have the potential to change our understanding of a situation?”
+That means processing priority can change dynamically.
+For example:
+Music:
+Priority 0
+
+Advertisement:
+Priority 0
+
+Routine sports:
+Priority 1
+
+Normal talk:
+Priority 2
+
+News:
+Priority 5
+
+Political interview:
+Priority 7
+
+Community grievance:
+Priority 8
+
+Breaking news:
+Priority 10
+
+Known situation escalation:
+Priority 10
+
+The priority engine can determine:
+Capture
+↓
+Transcribe
+↓
+Translate
+↓
+Analyse
+↓
+Alert
+
+or:
+Capture
+↓
+Discard
+
+
+The Final Concept
+I would describe the SignalDesk radio architecture as:
+A Programming-Aware, Event-Driven Broadcast Intelligence Sensor
+It does four things:
+1. It knows where to listen
+Station Registry
+
+2. It knows when to listen deeply
+News Clock + Programme Schedule
+
+3. It knows what deserves processing
+Audio Classification + Intelligence Priority
+
+4. It knows what the information means
+Transcription → Event → Situation → Trajectory → Exposure → Action
+
+The fundamental architecture is therefore:
+Radio is the sensor. The broadcast is the raw signal. The transcript is the observation. The event is the structured data. The situation is the intelligence. The recommendation is the product.
+This fits perfectly with SignalDesk's broader core promise:
+What is happening?Is it getting worse or better?Where is it happening?Who is involved?What is driving it?What happens next?How am I exposed?What should I do?

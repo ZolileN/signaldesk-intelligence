@@ -1,0 +1,1185 @@
+
+SIGNALDESK AFRICA
+BUILDABLE ENGINEERING SPECIFICATION
+Version: 1.0Status: Foundational Engineering SpecificationArchitecture: Event-driven intelligence platformPrimary Objective: Convert fragmented information into evidence-backed intelligence about developing situations and customer exposure.
+
+1. SYSTEM CONTRACT
+Every external source must ultimately produce an:
+Observation
+Every observation may produce:
+Claims
+Entities
+Events
+Multiple events may form:
+Situation
+A situation may create:
+Exposure
+An exposure may produce:
+Impact
+An impact may produce:
+Recommendation
+The canonical pipeline is:
+SOURCE
+  ↓
+OBSERVATION
+  ↓
+PROCESSING
+  ↓
+CLAIM
+  ↓
+ENTITY
+  ↓
+EVENT
+  ↓
+SITUATION
+  ↓
+TRAJECTORY
+  ↓
+EXPOSURE
+  ↓
+IMPACT
+  ↓
+RECOMMENDATION
+
+2. RECOMMENDED INITIAL REPOSITORY STRUCTURE
+signaldesk/
+│
+├── apps/
+│   ├── api/
+│   ├── worker/
+│   ├── dashboard/
+│   └── ingestion/
+│
+├── packages/
+│   ├── schemas/
+│   ├── ontology/
+│   ├── intelligence/
+│   ├── entity-resolution/
+│   ├── event-detection/
+│   ├── situation-engine/
+│   └── exposure-engine/
+│
+├── infrastructure/
+│   ├── docker/
+│   ├── terraform/
+│   └── migrations/
+│
+├── tests/
+│
+└── docs/
+    ├── architecture/
+    ├── api/
+    ├── ontology/
+    └── ml/
+The system should initially be a modular monolith with asynchronous workers, rather than immediately splitting everything into microservices.
+
+3. CANONICAL DATABASE SCHEMA
+3.1 Tenancy
+SignalDesk is a multi-tenant enterprise platform.
+CREATE TABLE organisations (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    organisation_type TEXT NOT NULL,
+    country_code CHAR(2),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Examples:
+Mining Company
+Investment Firm
+Government Department
+NGO
+Corporate Communications Department
+Political Organisation
+Financial Institution
+
+4. USERS AND ACCESS CONTROL
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    full_name TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE organisation_members (
+    organisation_id UUID REFERENCES organisations(id),
+    user_id UUID REFERENCES users(id),
+    role TEXT NOT NULL,
+    PRIMARY KEY (organisation_id, user_id)
+);
+Roles:
+OWNER
+ADMIN
+ANALYST
+VIEWER
+EXECUTIVE
+
+5. SOURCES
+CREATE TABLE sources (
+    id UUID PRIMARY KEY,
+
+    name TEXT NOT NULL,
+
+    source_type TEXT NOT NULL,
+
+    country_code CHAR(2),
+    language_codes TEXT[],
+
+    url TEXT,
+
+    reliability_score NUMERIC(5,4),
+
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+
+    metadata JSONB DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Source types:
+NEWS_PUBLICATION
+RADIO_STATION
+TELEVISION_STATION
+SOCIAL_ACCOUNT
+GOVERNMENT
+CORPORATE
+REGULATOR
+NGO
+RESEARCH_INSTITUTION
+PUBLIC_DATASET
+CUSTOMER_PROVIDED
+
+6. OBSERVATIONS
+An observation is the original captured material.
+CREATE TABLE observations (
+    id UUID PRIMARY KEY,
+
+    source_id UUID NOT NULL REFERENCES sources(id),
+
+    content_type TEXT NOT NULL,
+
+    title TEXT,
+
+    raw_content TEXT,
+
+    transcript TEXT,
+
+    source_url TEXT,
+
+    published_at TIMESTAMPTZ,
+
+    captured_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    language_code TEXT,
+
+    country_code CHAR(2),
+
+    location GEOGRAPHY(POINT, 4326),
+
+    content_hash TEXT UNIQUE,
+
+    storage_reference TEXT,
+
+    metadata JSONB DEFAULT '{}',
+
+    processing_status TEXT NOT NULL DEFAULT 'PENDING',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Content types:
+ARTICLE
+AUDIO
+VIDEO
+SOCIAL_POST
+DOCUMENT
+PRESS_RELEASE
+GOVERNMENT_NOTICE
+DATASET
+Important principle:
+The original observation must remain immutable.
+Derived AI interpretations can change. The original source evidence must not.
+
+7. CLAIMS
+CREATE TABLE claims (
+    id UUID PRIMARY KEY,
+
+    observation_id UUID NOT NULL REFERENCES observations(id),
+
+    claim_text TEXT NOT NULL,
+
+    claim_type TEXT NOT NULL,
+
+    claimant_entity_id UUID,
+
+    temporal_reference JSONB,
+
+    geographic_reference JSONB,
+
+    verification_status TEXT NOT NULL DEFAULT 'UNVERIFIED',
+
+    confidence_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Claim types:
+FACTUAL_ASSERTION
+ALLEGATION
+RUMOUR
+PREDICTION
+OPINION
+NARRATIVE
+DENIAL
+WARNING
+COMMITMENT
+Verification statuses:
+VERIFIED
+PARTIALLY_VERIFIED
+CONTESTED
+UNVERIFIED
+FALSE
+MISLEADING
+The system should never automatically assign “disinformation” merely because a claim is false.
+Intent requires separate evidence.
+
+8. ENTITIES
+CREATE TABLE entities (
+    id UUID PRIMARY KEY,
+
+    canonical_name TEXT NOT NULL,
+
+    entity_type TEXT NOT NULL,
+
+    description TEXT,
+
+    country_code CHAR(2),
+
+    aliases TEXT[],
+
+    external_identifiers JSONB DEFAULT '{}',
+
+    metadata JSONB DEFAULT '{}',
+
+    confidence_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Entity types:
+PERSON
+ORGANISATION
+COMPANY
+GOVERNMENT
+POLITICAL_PARTY
+NGO
+COMMUNITY
+LOCATION
+COUNTRY
+CITY
+MUNICIPALITY
+PROVINCE
+ASSET
+MINE
+FACILITY
+ROAD
+PORT
+AIRPORT
+POLICY
+LAW
+REGULATION
+PRODUCT
+
+9. ENTITY MENTIONS
+An observation may mention an entity without initially knowing which canonical entity it refers to.
+CREATE TABLE entity_mentions (
+    id UUID PRIMARY KEY,
+
+    observation_id UUID REFERENCES observations(id),
+
+    entity_id UUID REFERENCES entities(id),
+
+    mention_text TEXT NOT NULL,
+
+    start_offset INTEGER,
+
+    end_offset INTEGER,
+
+    resolution_confidence NUMERIC(5,4),
+
+    resolution_status TEXT DEFAULT 'PENDING'
+);
+This supports:
+"Ramaphosa"
+"President Ramaphosa"
+"President Cyril Ramaphosa"
+being resolved to one canonical entity.
+
+10. EVENTS
+CREATE TABLE events (
+    id UUID PRIMARY KEY,
+
+    event_type TEXT NOT NULL,
+
+    title TEXT NOT NULL,
+
+    description TEXT,
+
+    start_time TIMESTAMPTZ,
+
+    end_time TIMESTAMPTZ,
+
+    location GEOGRAPHY(POINT, 4326),
+
+    severity TEXT,
+
+    confidence_score NUMERIC(5,4),
+
+    status TEXT NOT NULL DEFAULT 'ACTIVE',
+
+    metadata JSONB DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Event statuses:
+DETECTED
+CONFIRMED
+DEVELOPING
+COMPLETED
+DISPUTED
+CANCELLED
+
+11. EVENT PARTICIPANTS
+CREATE TABLE event_entities (
+    event_id UUID REFERENCES events(id),
+
+    entity_id UUID REFERENCES entities(id),
+
+    role TEXT NOT NULL,
+
+    confidence_score NUMERIC(5,4),
+
+    PRIMARY KEY (event_id, entity_id, role)
+);
+Roles:
+ACTOR
+TARGET
+VICTIM
+BENEFICIARY
+LOCATION
+OWNER
+RESPONDER
+WITNESS
+Example:
+Event:
+Community Protest
+
+Entity:
+Community A → ACTOR
+
+Entity:
+Mining Company B → TARGET
+
+Entity:
+Town C → LOCATION
+
+12. EVENT RELATIONSHIPS
+CREATE TABLE event_relationships (
+    source_event_id UUID REFERENCES events(id),
+
+    target_event_id UUID REFERENCES events(id),
+
+    relationship_type TEXT NOT NULL,
+
+    confidence_score NUMERIC(5,4),
+
+    PRIMARY KEY (
+        source_event_id,
+        target_event_id,
+        relationship_type
+    )
+);
+Relationship types:
+CAUSES
+TRIGGERS
+FOLLOWS
+ESCALATES
+DE_ESCALATES
+CONTRADICTS
+CORROBORATES
+PRECEDES
+RESULTS_IN
+RESPONDS_TO
+
+13. SITUATIONS
+CREATE TABLE situations (
+    id UUID PRIMARY KEY,
+
+    title TEXT NOT NULL,
+
+    summary TEXT,
+
+    situation_type TEXT NOT NULL,
+
+    status TEXT NOT NULL DEFAULT 'EMERGING',
+
+    trajectory TEXT,
+
+    severity TEXT,
+
+    confidence_score NUMERIC(5,4),
+
+    start_time TIMESTAMPTZ,
+
+    last_activity_at TIMESTAMPTZ,
+
+    geographic_scope JSONB,
+
+    drivers JSONB,
+
+    potential_outcomes JSONB,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Situation statuses:
+DORMANT
+EMERGING
+DEVELOPING
+ESCALATING
+CRITICAL
+STABILISING
+DE_ESCALATING
+RESOLVED
+HISTORICAL
+
+14. EVENT-SITUATION MEMBERSHIP
+CREATE TABLE situation_events (
+    situation_id UUID REFERENCES situations(id),
+
+    event_id UUID REFERENCES events(id),
+
+    relationship_type TEXT,
+
+    relevance_score NUMERIC(5,4),
+
+    PRIMARY KEY (situation_id, event_id)
+);
+This is the critical distinction:
+ONE EVENT
+versus:
+MULTIPLE RELATED EVENTS
+        ↓
+ONE SITUATION
+
+15. SITUATION ACTORS
+CREATE TABLE situation_entities (
+    situation_id UUID REFERENCES situations(id),
+
+    entity_id UUID REFERENCES entities(id),
+
+    role TEXT,
+
+    influence_score NUMERIC(5,4),
+
+    involvement_score NUMERIC(5,4),
+
+    PRIMARY KEY (situation_id, entity_id, role)
+);
+Roles:
+PRIMARY_ACTOR
+SECONDARY_ACTOR
+AFFECTED_PARTY
+DECISION_MAKER
+RESPONDER
+AMPLIFIER
+BENEFICIARY
+
+16. SITUATION TRAJECTORY
+CREATE TABLE situation_trajectory_snapshots (
+    id UUID PRIMARY KEY,
+
+    situation_id UUID REFERENCES situations(id),
+
+    trajectory TEXT NOT NULL,
+
+    trajectory_score NUMERIC(8,4),
+
+    event_frequency NUMERIC(8,4),
+
+    severity_score NUMERIC(8,4),
+
+    actor_expansion_score NUMERIC(8,4),
+
+    geographic_expansion_score NUMERIC(8,4),
+
+    narrative_intensity_score NUMERIC(8,4),
+
+    recorded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+This allows the platform to answer:
+Is it getting worse or better?
+using historical measurements rather than simply asking an LLM for an opinion.
+
+17. EVIDENCE
+CREATE TABLE evidence (
+    id UUID PRIMARY KEY,
+
+    observation_id UUID REFERENCES observations(id),
+
+    claim_id UUID REFERENCES claims(id),
+
+    event_id UUID REFERENCES events(id),
+
+    situation_id UUID REFERENCES situations(id),
+
+    evidence_type TEXT NOT NULL,
+
+    relevance_score NUMERIC(5,4),
+
+    reliability_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Evidence types:
+DIRECT
+CORROBORATING
+INDIRECT
+CONTRADICTORY
+HISTORICAL
+ANALYTICAL
+
+18. CUSTOMER ASSETS
+Customers need to tell SignalDesk what they care about.
+CREATE TABLE customer_assets (
+    id UUID PRIMARY KEY,
+
+    organisation_id UUID REFERENCES organisations(id),
+
+    entity_id UUID REFERENCES entities(id),
+
+    asset_type TEXT NOT NULL,
+
+    name TEXT NOT NULL,
+
+    location GEOGRAPHY(POINT, 4326),
+
+    metadata JSONB DEFAULT '{}'
+);
+Examples:
+Mine
+Factory
+Office
+Port
+Investment
+Supply Chain
+Project
+Political Constituency
+Municipality
+Infrastructure Asset
+
+19. EXPOSURE
+CREATE TABLE exposures (
+    id UUID PRIMARY KEY,
+
+    organisation_id UUID REFERENCES organisations(id),
+
+    situation_id UUID REFERENCES situations(id),
+
+    asset_id UUID REFERENCES customer_assets(id),
+
+    exposure_type TEXT NOT NULL,
+
+    exposure_score NUMERIC(5,4),
+
+    impact_score NUMERIC(5,4),
+
+    probability_score NUMERIC(5,4),
+
+    time_horizon TEXT,
+
+    explanation TEXT,
+
+    confidence_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Exposure types:
+DIRECT
+INDIRECT
+FINANCIAL
+OPERATIONAL
+REGULATORY
+REPUTATIONAL
+POLITICAL
+SECURITY
+SUPPLY_CHAIN
+MARKET
+
+20. RECOMMENDATIONS
+CREATE TABLE recommendations (
+    id UUID PRIMARY KEY,
+
+    organisation_id UUID REFERENCES organisations(id),
+
+    situation_id UUID REFERENCES situations(id),
+
+    exposure_id UUID REFERENCES exposures(id),
+
+    recommendation_type TEXT NOT NULL,
+
+    recommendation_text TEXT NOT NULL,
+
+    urgency TEXT,
+
+    confidence_score NUMERIC(5,4),
+
+    status TEXT DEFAULT 'ACTIVE',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+21. ALERTS
+CREATE TABLE alerts (
+    id UUID PRIMARY KEY,
+
+    organisation_id UUID REFERENCES organisations(id),
+
+    situation_id UUID REFERENCES situations(id),
+
+    alert_level TEXT NOT NULL,
+
+    title TEXT NOT NULL,
+
+    message TEXT NOT NULL,
+
+    reason TEXT,
+
+    read_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+Alert levels:
+INFORMATION
+WATCH
+ELEVATED
+HIGH
+CRITICAL
+
+22. THE EIGHT-QUESTION API CONTRACT
+Every situation must be able to produce answers to:
+1. What is happening?
+2. Is it getting worse or better?
+3. Where is it happening?
+4. Who is involved?
+5. What is driving it?
+6. What happens next?
+7. How am I exposed?
+8. What should I do?
+The API response should therefore expose:
+{
+  "situation_id": "uuid",
+
+  "what_is_happening": {
+    "summary": "...",
+    "evidence": []
+  },
+
+  "trajectory": {
+    "direction": "ESCALATING",
+    "score": 0.82,
+    "explanation": "..."
+  },
+
+  "where": {
+    "locations": []
+  },
+
+  "actors": [],
+
+  "drivers": [],
+
+  "potential_next_developments": [],
+
+  "exposure": {
+    "level": "HIGH",
+    "assets": [],
+    "explanation": "..."
+  },
+
+  "recommended_actions": []
+}
+This is the core product contract.
+
+23. EVENT BUS
+The platform should publish domain events.
+Example:
+ObservationCreated
+Payload:
+{
+  "event_type": "ObservationCreated",
+  "observation_id": "uuid",
+  "source_id": "uuid",
+  "occurred_at": "2026-07-22T10:00:00Z"
+}
+Other events:
+ObservationProcessed
+ClaimExtracted
+EntityDetected
+EntityResolved
+EventDetected
+EventUpdated
+SituationCreated
+SituationUpdated
+TrajectoryChanged
+ExposureDetected
+AlertTriggered
+RecommendationGenerated
+
+24. PROCESSING QUEUES
+Recommended queues:
+observation-ingestion
+content-processing
+transcription
+classification
+entity-extraction
+entity-resolution
+claim-extraction
+event-detection
+event-clustering
+situation-analysis
+trajectory-analysis
+exposure-analysis
+alert-generation
+Each job should be:
+Idempotent
+Retryable
+Observable
+Traceable
+
+25. JOB CONTRACT
+Example:
+{
+  "job_id": "uuid",
+  "job_type": "ENTITY_EXTRACTION",
+  "input": {
+    "observation_id": "uuid"
+  },
+  "attempt": 1,
+  "created_at": "timestamp"
+}
+Result:
+{
+  "job_id": "uuid",
+  "status": "COMPLETED",
+  "output": {
+    "entities_created": 12
+  }
+}
+
+26. AI MODEL CONTRACT
+AI models should not directly modify the database without validation.
+The correct pipeline is:
+AI MODEL
+   ↓
+STRUCTURED OUTPUT
+   ↓
+SCHEMA VALIDATION
+   ↓
+BUSINESS VALIDATION
+   ↓
+DATABASE WRITE
+Example:
+{
+  "entity_mentions": [
+    {
+      "text": "Company X",
+      "entity_type": "COMPANY",
+      "confidence": 0.94
+    }
+  ]
+}
+If the model returns malformed output:
+REJECT
+   ↓
+RETRY
+   ↓
+FALLBACK MODEL
+   ↓
+HUMAN REVIEW
+
+27. AI MODEL INPUT/OUTPUT CONTRACTS
+Entity Extraction
+Input:
+{
+  "text": "The minister met representatives of Company X in Johannesburg."
+}
+Output:
+{
+  "entities": [
+    {
+      "text": "minister",
+      "type": "PERSON",
+      "confidence": 0.91
+    },
+    {
+      "text": "Company X",
+      "type": "COMPANY",
+      "confidence": 0.98
+    },
+    {
+      "text": "Johannesburg",
+      "type": "LOCATION",
+      "confidence": 0.99
+    }
+  ]
+}
+
+Claim Extraction
+Input:
+{
+  "observation_id": "uuid",
+  "text": "The government will introduce the policy next month."
+}
+Output:
+{
+  "claims": [
+    {
+      "claim_type": "COMMITMENT",
+      "claim_text": "The government will introduce the policy next month.",
+      "claimant": "Government",
+      "temporal_reference": "NEXT_MONTH",
+      "confidence": 0.91
+    }
+  ]
+}
+
+Event Detection
+Output:
+{
+  "event": {
+    "event_type": "POLICY_ANNOUNCEMENT",
+    "title": "Government announces policy implementation",
+    "actors": [],
+    "location": null,
+    "time": null,
+    "confidence": 0.87
+  }
+}
+
+Situation Classification
+{
+  "situation_type": "COMMUNITY_CONFLICT",
+  "severity": "HIGH",
+  "trajectory": "ESCALATING",
+  "confidence": 0.78,
+  "reasoning_factors": [
+    "Increasing event frequency",
+    "Expansion of actors",
+    "Geographic spread"
+  ]
+}
+The reasoning factors must be based on observable signals.
+
+28. THE SITUATION ENGINE
+The Situation Engine is the heart of SignalDesk.
+Its responsibility is to determine:
+Are these events related?
+The engine should use:
+Semantic similarity
+Temporal proximity
+Geographic proximity
+Entity overlap
+Causal relationships
+Event types
+Narrative similarity
+Conceptually:
+Situation Similarity =
+Semantic Similarity
++
+Entity Overlap
++
+Geographic Proximity
++
+Temporal Proximity
++
+Causal Relationship
+If the score exceeds a threshold:
+NEW EVENT
+     ↓
+EXISTING SITUATION
+Otherwise:
+NEW EVENT
+     ↓
+NEW SITUATION
+
+29. SITUATION UPDATE LOGIC
+Every new event should trigger:
+1. Find related situations
+2. Score similarity
+3. Attach event if related
+4. Recalculate severity
+5. Recalculate trajectory
+6. Recalculate actors
+7. Recalculate geography
+8. Recalculate drivers
+9. Recalculate customer exposure
+10. Evaluate alerts
+This is the central intelligence loop.
+
+30. TRAJECTORY ENGINE
+The trajectory engine should not depend solely on an LLM.
+It should calculate measurable signals:
+event_frequency_change
+severity_change
+actor_count_change
+geographic_spread_change
+institutional_response_change
+narrative_volume_change
+Example:
+Last 7 days:
+Events: 4
+
+Current 7 days:
+Events: 17
+
+Event growth:
++325%
+This is a measurable escalation signal.
+The LLM can then explain the result.
+
+31. RADIO SENSOR CONTRACT
+Radio ingestion should produce the same observation object as news.
+{
+  "source_type": "RADIO_STATION",
+
+  "content_type": "AUDIO",
+
+  "source_id": "station_uuid",
+
+  "captured_at": "timestamp",
+
+  "audio_reference": "s3://...",
+
+  "segment_start": "timestamp",
+
+  "segment_end": "timestamp",
+
+  "programme_context": {
+    "programme_name": "Morning News",
+    "expected_content_type": "NEWS"
+  }
+}
+The radio sensor does not need a separate intelligence model.
+It is simply another observation source.
+
+32. RADIO PROCESSING PIPELINE
+RADIO STREAM
+     ↓
+STREAM HEALTH MONITOR
+     ↓
+PROGRAMME SCHEDULE
+     ↓
+LISTENING PRIORITY
+     ↓
+AUDIO CAPTURE
+     ↓
+SEGMENTATION
+     ↓
+CONTENT CLASSIFICATION
+     ↓
+SPEECH-TO-TEXT
+     ↓
+OBSERVATION
+     ↓
+NORMAL SIGNALDESK PIPELINE
+The important distinction from Qisimah:
+QISIMAH:
+Audio → Identify Song
+
+SIGNALDESK:
+Audio → Understand Information
+
+33. VECTANEWS CONTRACT
+VectaNews should be treated as a specialised ingestion and news intelligence source.
+It should output:
+{
+  "observation": {
+    "source_id": "uuid",
+    "content_type": "ARTICLE",
+    "title": "...",
+    "raw_content": "...",
+    "published_at": "...",
+    "source_url": "..."
+  }
+}
+SignalDesk then owns:
+Entity Resolution
+Event Canonicalisation
+Situation Formation
+Trajectory
+Exposure
+Recommendations
+This separation is strategically important.
+VectaNews can remain a strong standalone product while becoming a major sensor for SignalDesk.
+
+34. API ENDPOINTS
+Sources
+GET /api/v1/sources
+POST /api/v1/sources
+GET /api/v1/sources/{id}
+Observations
+GET /api/v1/observations
+GET /api/v1/observations/{id}
+POST /api/v1/observations
+Events
+GET /api/v1/events
+GET /api/v1/events/{id}
+Situations
+GET /api/v1/situations
+GET /api/v1/situations/{id}
+Exposure
+GET /api/v1/exposure
+GET /api/v1/exposure/{situation_id}
+Alerts
+GET /api/v1/alerts
+POST /api/v1/alerts/{id}/acknowledge
+
+35. MVP API
+The initial MVP only needs:
+POST /observations
+GET /situations
+GET /situations/{id}
+GET /events
+GET /entities
+The core user experience is:
+USER
+ ↓
+SITUATION
+ ↓
+EIGHT QUESTIONS
+Everything else supports that experience.
+
+36. ENGINEERING BUILD ORDER
+Sprint Group 1: Foundation
+Repository
+Database
+Migrations
+Authentication
+Organisation Model
+Source Registry
+
+Sprint Group 2: Observation Pipeline
+Observation API
+Source Ingestion
+Raw Content Storage
+Deduplication
+Processing Queue
+
+Sprint Group 3: Intelligence Extraction
+Language Detection
+Classification
+NER
+Entity Resolution
+Claim Extraction
+
+Sprint Group 4: Event Engine
+Event Detection
+Event Storage
+Event Relationships
+Event Clustering
+
+Sprint Group 5: Situation Engine
+Situation Creation
+Situation Updates
+Situation Classification
+Situation Trajectory
+Situation Timeline
+
+Sprint Group 6: Eight-Question Interface
+What is happening?
+Is it getting worse?
+Where?
+Who?
+Why?
+What next?
+How am I exposed?
+What should I do?
+This is the first true product milestone.
+
+Sprint Group 7: VectaNews Integration
+VectaNews Adapter
+Observation Normalisation
+News Event Processing
+Situation Formation
+
+Sprint Group 8: Radio Sensor
+Station Registry
+Stream Monitor
+Schedule Engine
+Audio Capture
+News Detection
+ASR
+Observation Creation
+
+Sprint Group 9: Exposure Engine
+Customer Assets
+Entity Relationships
+Geographic Matching
+Exposure Scoring
+Impact Analysis
+
+Sprint Group 10: Alerts and Recommendations
+Alert Rules
+Severity
+Urgency
+Customer Notifications
+Recommendations
+
+37. MVP SUCCESS CRITERIA
+The MVP is successful if:
+A source publishes information
+        ↓
+SignalDesk processes it
+        ↓
+The system identifies an event
+        ↓
+The system connects related events
+        ↓
+A situation is created
+        ↓
+The situation evolves over time
+        ↓
+The system answers the eight questions
+The most important test is:
+Can an analyst understand a developing situation faster and more accurately using SignalDesk than by manually monitoring multiple news sites, radio stations, social media platforms and documents?
+That is the real product test.
+
+38. FINAL ENGINEERING PRINCIPLE
+SignalDesk should not be built as:
+AI chatbot
++
+News scraper
++
+Radio player
+It should be built as:
+CONTINUOUS OBSERVATION
+        ↓
+STRUCTURED EVIDENCE
+        ↓
+ENTITY GRAPH
+        ↓
+EVENT GRAPH
+        ↓
+SITUATION GRAPH
+        ↓
+TRAJECTORY
+        ↓
+EXPOSURE
+        ↓
+DECISION SUPPORT
+The fundamental technical moat is not the individual AI model.
+The moat is the continuously updated:
+African intelligence graph of sources, entities, events, situations, relationships, trajectories and outcomes.
+That is what makes the architecture defensible.

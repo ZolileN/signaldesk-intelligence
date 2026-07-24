@@ -1,0 +1,1312 @@
+
+SIGNALDESK AFRICA
+African Situation Intelligence Infrastructure
+Comprehensive Product, Intelligence, Data, Technical and Operating Architecture
+Version: 1.0Status: Foundational Product DefinitionProduct Family: SignalDesk AfricaCore Components: SignalDesk Intelligence Engine, VectaNews, Qisimah Audio Intelligence, Radio Sensor Network
+
+1. Executive Summary
+SignalDesk Africa is an African-first situation intelligence infrastructure platform designed to help organisations understand what is happening in the world around them, how situations are developing, how they may be exposed, and what they should do next.
+The platform converts fragmented, unstructured and rapidly changing information into structured, evidence-backed decision intelligence.
+The central promise is:
+The Eight Questions
+What is happening?
+Is it getting worse or better?
+Where is it happening?
+Who is involved?
+What is driving it?
+What happens next?
+How am I exposed?
+What should I do?
+SignalDesk does not fundamentally compete as:
+A news aggregator.
+A media-monitoring platform.
+A social listening tool.
+A radio transcription service.
+A dashboard of information.
+Its core product is:
+A system that observes the world, identifies developing events, connects them into situations, determines trajectory and drivers, maps exposure, and produces decision intelligence.
+The architecture is designed to ingest information from multiple sources, including:
+News media.
+Online publications.
+Radio broadcasts.
+Social media.
+Government documents.
+Corporate disclosures.
+Public datasets.
+Regulatory information.
+Historical events.
+Customer-provided internal data.
+These sources are converted into a unified intelligence model.
+REAL WORLD
+    ↓
+SOURCES
+    ↓
+SIGNALS
+    ↓
+OBSERVATIONS
+    ↓
+CLAIMS
+    ↓
+ENTITIES
+    ↓
+EVENTS
+    ↓
+EVENT RELATIONSHIPS
+    ↓
+SITUATIONS
+    ↓
+TRAJECTORY
+    ↓
+DRIVERS
+    ↓
+EXPOSURE
+    ↓
+IMPACT
+    ↓
+ACTION
+
+2. The Strategic Thesis
+Africa is not an information-poor continent.
+Africa is an information-fragmented continent.
+Relevant information exists across:
+Local newspapers.
+National media.
+Community radio.
+Government websites.
+Regulatory notices.
+Social media.
+Political statements.
+Corporate announcements.
+Public meetings.
+Research organisations.
+International media.
+Informal communication networks.
+The problem is not simply finding information.
+The problem is understanding:
+Which signals matter, how they connect, whether a situation is changing, and what the implications are for a specific organisation.
+Existing platforms typically specialise in one layer:
+News Aggregator
+    ↓
+Finds articles
+
+Media Monitoring
+    ↓
+Tracks mentions
+
+Social Listening
+    ↓
+Tracks conversations
+
+Risk Platform
+    ↓
+Displays risk data
+
+Business Intelligence
+    ↓
+Analyses internal data
+SignalDesk aims to connect these layers.
+NEWS
+RADIO
+SOCIAL
+GOVERNMENT
+BUSINESS
+HISTORICAL DATA
+       ↓
+UNIFIED INTELLIGENCE MODEL
+       ↓
+SITUATION INTELLIGENCE
+       ↓
+CUSTOMER EXPOSURE
+       ↓
+DECISION SUPPORT
+
+3. The Product Architecture
+SignalDesk should be understood as a layered platform.
+Layer 1: Sensors
+The system observes the world.
+VectaNews
+Radio Sensor Network
+Social Sensors
+Government Data Sensors
+Corporate Data Sensors
+Open Data Sensors
+Customer Data
+Layer 2: Signal Processing
+Raw information is cleaned, normalised and classified.
+Collection
+    ↓
+Normalisation
+    ↓
+Deduplication
+    ↓
+Language Detection
+    ↓
+Classification
+    ↓
+Entity Extraction
+    ↓
+Claim Extraction
+Layer 3: Event Intelligence
+The platform identifies things that happened or are being claimed to have happened.
+Article
+Radio Segment
+Government Statement
+Social Post
+    ↓
+Observation
+    ↓
+Claim
+    ↓
+Event
+Layer 4: Situation Intelligence
+Related events are connected.
+Event A
+    +
+Event B
+    +
+Event C
+    ↓
+SITUATION
+Layer 5: Analytical Intelligence
+The platform determines:
+Trajectory.
+Drivers.
+Actors.
+Geography.
+Causality.
+Potential next developments.
+Confidence.
+Layer 6: Exposure Intelligence
+The system maps situations to the customer's:
+Assets.
+Locations.
+Operations.
+Investments.
+People.
+Supply chains.
+Stakeholders.
+Strategic interests.
+Layer 7: Decision Intelligence
+The platform produces:
+Alerts.
+Assessments.
+Recommended actions.
+Monitoring priorities.
+Scenario analysis.
+
+4. The Canonical Intelligence Model
+The entire platform requires a common intelligence data model.
+4.1 Source
+A source is where information originates.
+Examples:
+News website.
+Radio station.
+Government department.
+Company.
+Social media account.
+Official document.
+Research institution.
+Source
+├── source_id
+├── name
+├── source_type
+├── country
+├── region
+├── language
+├── ownership
+├── historical_reliability
+├── political_context
+└── metadata
+
+4.2 Observation
+An observation is a piece of information captured from a source.
+Examples:
+An article.
+A radio broadcast.
+A social post.
+A government announcement.
+Observation
+├── observation_id
+├── source_id
+├── timestamp
+├── raw_content
+├── language
+├── location
+├── content_type
+└── provenance
+
+4.3 Claim
+A claim is a proposition contained within an observation.
+Example:
+“Residents are planning to block the road.”
+The system should record:
+Claim
+├── claim_id
+├── text
+├── claimant
+├── source
+├── timestamp
+├── evidence
+├── contradicting_evidence
+├── verification_status
+└── confidence
+Claims must be distinguished from facts.
+The system must support:
+FACT
+CLAIM
+ALLEGATION
+RUMOUR
+OPINION
+NARRATIVE
+PREDICTION
+
+4.4 Entity
+An entity is a person, organisation, location, asset, institution, policy or other identifiable object.
+Entity
+├── entity_id
+├── canonical_name
+├── aliases
+├── type
+├── location
+├── relationships
+└── confidence
+Examples:
+Cyril Ramaphosa.
+Anglo American.
+Johannesburg.
+Department of Mineral Resources.
+A mine.
+A road.
+A political party.
+
+4.5 Event
+An event is a discrete occurrence.
+Examples:
+Protest.
+Announcement.
+Policy decision.
+Strike.
+Court ruling.
+Investment.
+Election.
+Road closure.
+Security incident.
+Business disruption.
+Event
+├── event_id
+├── event_type
+├── timestamp
+├── location
+├── actors
+├── claims
+├── evidence
+├── severity
+├── confidence
+└── related_events
+
+4.6 Situation
+A situation is a developing real-world condition consisting of multiple related events, actors, drivers and consequences.
+Example:
+Community Grievance
+        ↓
+Public Complaints
+        ↓
+Protest
+        ↓
+Road Blockade
+        ↓
+Operational Disruption
+        ↓
+Political Intervention
+Situation
+├── situation_id
+├── title
+├── summary
+├── status
+├── trajectory
+├── drivers
+├── actors
+├── geography
+├── related_events
+├── evidence
+├── exposure
+├── potential_outcomes
+└── recommended_actions
+
+5. Situation Lifecycle
+A situation may move through:
+DORMANT
+    ↓
+EMERGING
+    ↓
+DEVELOPING
+    ↓
+ESCALATING
+    ↓
+CRITICAL
+    ↓
+STABILISING
+    ↓
+DE-ESCALATING
+    ↓
+RESOLVED
+    ↓
+HISTORICAL
+Situations may also:
+Merge.
+Split.
+Re-emerge.
+Mutate.
+Become part of a larger situation.
+Example:
+Local Immigration Protest
+        ↓
+Regional Political Campaign
+        ↓
+National Political Issue
+The situation engine must continuously reassess the state.
+
+6. VectaNews
+VectaNews is the News Intelligence Layer of SignalDesk.
+Its function is not merely to aggregate articles.
+Its purpose is to:
+Discover, collect, normalise, classify, structure and connect news reporting into events and developing situations.
+VectaNews Data Flow
+NEWS SOURCES
+    ↓
+DISCOVERY
+    ↓
+COLLECTION
+    ↓
+ARTICLE EXTRACTION
+    ↓
+DEDUPLICATION
+    ↓
+LANGUAGE DETECTION
+    ↓
+ENTITY EXTRACTION
+    ↓
+CLAIM EXTRACTION
+    ↓
+EVENT DETECTION
+    ↓
+EVENT CLUSTERING
+    ↓
+SIGNALDESK
+VectaNews produces:
+Article
+    ↓
+Observation
+    ↓
+Claim
+    ↓
+Entity
+    ↓
+Event
+The key differentiator is event clustering.
+Five articles may represent:
+5 ARTICLES
+    ↓
+1 DEVELOPING EVENT
+SignalDesk then determines whether that event belongs to:
+A DEVELOPING SITUATION
+
+7. Qisimah Audio Intelligence
+Qisimah represents the audio intelligence capability.
+The initial approach used:
+Audio File
+    ↓
+FFmpeg
+    ↓
+15–30 Second Chunks
+    ↓
+Queue
+    ↓
+ACR Cloud
+This is suitable for identifying known music.
+SignalDesk requires a different architecture because it needs to understand live broadcast content.
+The radio system therefore becomes a:
+Programming-Aware Broadcast Sensor Network
+RADIO STREAM
+    ↓
+STATION REGISTRY
+    ↓
+PROGRAMME SCHEDULE
+    ↓
+NEWS CLOCK
+    ↓
+LISTENING SCHEDULER
+    ↓
+AUDIO CAPTURE
+    ↓
+SEGMENTATION
+    ↓
+AUDIO CLASSIFICATION
+    ↓
+SPEECH-TO-TEXT
+    ↓
+ENTITY / CLAIM EXTRACTION
+    ↓
+EVENT DETECTION
+    ↓
+SIGNALDESK
+The system learns when news is likely to occur.
+For example:
+10:00 → News
+10:30 → News
+11:00 → News
+12:00 → Major Bulletin
+18:00 → Evening News
+Instead of processing every second equally, SignalDesk prioritises likely intelligence windows.
+
+8. Unified Multi-Sensor Architecture
+All sensors eventually produce the same intelligence objects.
+VectaNews
+    ↓
+News Observation
+    ↓
+Event
+
+Radio Sensor
+    ↓
+Audio Observation
+    ↓
+Event
+
+Social Sensor
+    ↓
+Social Observation
+    ↓
+Event
+
+Government Sensor
+    ↓
+Document Observation
+    ↓
+Event
+These converge:
+NEWS EVENT
+RADIO EVENT
+SOCIAL EVENT
+GOVERNMENT EVENT
+       ↓
+UNIFIED EVENT LAYER
+       ↓
+EVENT GRAPH
+       ↓
+SITUATION ENGINE
+This makes SignalDesk source-independent.
+The platform is not dependent on one data type.
+
+9. The Event Graph
+The event graph connects related events.
+Example:
+Event A:
+Community complaints
+
+Event B:
+Public meeting
+
+Event C:
+Protest threat
+
+Event D:
+Road blockade
+
+Event E:
+Police deployment
+The event graph may represent:
+Complaint
+    ↓
+Mobilisation
+    ↓
+Protest
+    ↓
+Disruption
+    ↓
+State Response
+This allows SignalDesk to understand relationships rather than merely store isolated events.
+
+10. The Eight-Question Intelligence Engine
+Every situation should be processed through the same analytical framework.
+Question 1: What is happening?
+The system synthesises:
+Events.
+Claims.
+Sources.
+Entities.
+Historical context.
+Output:
+A developing community dispute is escalating around the mining project.
+
+Question 2: Is it getting worse or better?
+Trajectory analysis should consider:
+Event frequency.
+Severity.
+Number of actors.
+Geographic spread.
+Institutional response.
+Language intensity.
+Operational consequences.
+Historical pattern.
+Possible output:
+Trajectory: ESCALATING
+Confidence: HIGH
+
+Question 3: Where is it happening?
+The platform identifies:
+Country.
+Province.
+City.
+Municipality.
+Community.
+Facility.
+Road.
+Mine.
+Border.
+Infrastructure.
+This enables geographic analysis.
+Situation
+    ↓
+Location
+    ↓
+Map
+    ↓
+Exposure
+
+Question 4: Who is involved?
+The system identifies:
+Individuals.
+Companies.
+Government departments.
+Political parties.
+Communities.
+NGOs.
+Regulators.
+Institutions.
+It builds actor relationships:
+ACTOR A
+    ↓ opposes
+ACTOR B
+
+ACTOR C
+    ↓ regulates
+ACTOR B
+
+ACTOR D
+    ↓ supports
+ACTOR A
+
+Question 5: What is driving it?
+The system separates:
+UNDERLYING CONDITION
+        ↓
+GRIEVANCE
+        ↓
+TRIGGER
+        ↓
+CATALYST
+        ↓
+EVENT
+        ↓
+REACTION
+        ↓
+CONSEQUENCE
+Example:
+Underlying Condition:
+Unemployment
+
+Grievance:
+Failure to deliver promised local jobs
+
+Trigger:
+Company announces expansion
+
+Catalyst:
+Political leader makes public statement
+
+Event:
+Community protest
+
+Consequence:
+Operational disruption
+
+Question 6: What happens next?
+The platform analyses:
+Current trajectory.
+Historical comparable situations.
+Actor behaviour.
+Current commitments.
+Scheduled events.
+Escalation patterns.
+Output:
+Likely next development:
+Further mobilisation within 7 days.
+
+Confidence:
+Medium.
+
+Evidence:
+Three recent escalation indicators.
+This is probabilistic intelligence, not certainty.
+
+Question 7: How am I exposed?
+The customer provides a profile of:
+Assets.
+Locations.
+Operations.
+Investments.
+Employees.
+Supply chains.
+Stakeholders.
+Strategic interests.
+The platform maps:
+SITUATION
+    ↓
+ENTITIES
+    ↓
+LOCATIONS
+    ↓
+CUSTOMER PROFILE
+    ↓
+EXPOSURE
+
+Question 8: What should I do?
+The platform produces role-specific recommendations.
+For a mining company:
+Review stakeholder engagement and operational continuity plans.
+For an investor:
+Reassess exposure to operational disruption and regulatory intervention.
+For a municipality:
+Prepare for potential service disruption and engage affected communities.
+For a communications team:
+Prepare a holding statement and monitor narrative escalation.
+
+11. The Exposure Engine
+The exposure engine is one of the most commercially important parts of SignalDesk.
+Investor
+Portfolio
+    ↓
+Companies
+    ↓
+Countries
+    ↓
+Sectors
+    ↓
+Assets
+    ↓
+Situations
+Mining Company
+Mines
+    ↓
+Communities
+    ↓
+Infrastructure
+    ↓
+Supply Chain
+    ↓
+Regulation
+    ↓
+Situations
+Municipality
+Jurisdiction
+    ↓
+Communities
+    ↓
+Infrastructure
+    ↓
+Service Delivery
+    ↓
+Political Environment
+The platform answers:
+This is happening. This is where it is happening. This is connected to you. This is how it may affect you.
+
+12. Source Reliability and Confidence
+SignalDesk must never treat all sources equally.
+Source reliability should consider:
+Historical accuracy.
+Correction history.
+Original reporting.
+Firsthand access.
+Geographic proximity.
+Topic expertise.
+Independence.
+Potential bias.
+Corroboration.
+A small community radio station may have firsthand information that a large international publication does not.
+Therefore reliability must be contextual.
+The confidence engine should consider:
+Source Reliability
++
+Evidence Quality
++
+Independent Corroboration
++
+Contradictory Evidence
++
+Temporal Consistency
+Output:
+Confidence:
+High / Medium / Low
+
+Verification:
+Confirmed / Partially Verified / Contested / Unverified
+
+13. Fact, Claim, Rumour and Narrative
+The platform must distinguish:
+FACT
+CLAIM
+ALLEGATION
+RUMOUR
+OPINION
+NARRATIVE
+PREDICTION
+Example:
+Claim:
+"Imports have been banned."
+
+Source A:
+Reports the claim.
+
+Government:
+Denies the claim.
+
+SignalDesk:
+Status: Contested.
+The platform should present:
+What is being claimed.
+Who is making the claim.
+What evidence supports it.
+What evidence contradicts it.
+Current confidence.
+This is especially important for:
+Political misinformation.
+Market rumours.
+Conflict.
+Public safety.
+Investment decisions.
+
+14. Multilingual Intelligence
+Africa requires multilingual architecture.
+The platform should support:
+English
+Afrikaans
+isiXhosa
+isiZulu
+Sesotho
+Setswana
+Sepedi
+Tshivenda
+itsonga
+Swahili
+French
+Portuguese
+Arabic
+Hausa
+Yoruba
+Igbo
+Amharic
+The system must handle:
+Language identification.
+Speech transcription.
+Translation.
+Code-switching.
+Local names.
+Slang.
+Transliteration.
+The canonical model should preserve:
+Original Content
+    ↓
+Original Language
+    ↓
+Translation
+    ↓
+Canonical Intelligence
+The original source should always remain available for verification.
+
+15. Entity Resolution
+The platform must recognise that:
+"Ramaphosa"
+"Cyril Ramaphosa"
+"President Ramaphosa"
+"CR"
+may refer to the same person.
+Similarly:
+"Joburg"
+"Johannesburg"
+"City of Johannesburg"
+may refer to the same location.
+The entity resolution pipeline:
+Raw Mention
+    ↓
+Normalisation
+    ↓
+Alias Matching
+    ↓
+Context Analysis
+    ↓
+Canonical Entity
+This is critical for the event graph.
+
+16. Knowledge Graph
+The platform should maintain a world intelligence graph.
+Nodes:
+People
+Companies
+Governments
+Organisations
+Locations
+Assets
+Policies
+Claims
+Sources
+Events
+Situations
+Relationships:
+Person
+    ↓ leads
+Organisation
+    ↓ owns
+Company
+    ↓ operates
+Mine
+    ↓ located in
+Municipality
+    ↓ affected by
+Protest
+    ↓ connected to
+Policy
+The graph becomes the foundation for:
+Entity discovery.
+Exposure mapping.
+Relationship analysis.
+Event clustering.
+Historical comparison.
+Causal reasoning.
+
+17. Situation Trajectory
+A situation should have measurable trajectory.
+Potential indicators:
+Event Frequency
+Severity
+Number of Actors
+Geographic Spread
+Institutional Response
+Operational Impact
+Public Mobilisation
+Narrative Intensity
+The system may classify:
+STABLE
+IMPROVING
+DETERIORATING
+ESCALATING
+VOLATILE
+UNCERTAIN
+The output should explain why.
+Example:
+Situation is escalating because the number of involved actors increased from 3 to 11, the issue spread across two municipalities, and a planned protest was announced.
+Explainability is essential.
+
+18. The Forecasting Engine
+The platform should not pretend to know the future.
+Instead it should identify:
+POSSIBLE NEXT DEVELOPMENTS
+based on:
+Current trajectory.
+Historical patterns.
+Comparable situations.
+Actor behaviour.
+Scheduled events.
+Current commitments.
+Output:
+Possible next development:
+Political intervention.
+
+Likelihood:
+Medium.
+
+Time horizon:
+7–14 days.
+
+Supporting indicators:
+Three recent events.
+
+19. Human-in-the-Loop Intelligence
+The platform should combine automation with analyst review.
+AI DETECTION
+    ↓
+AI ANALYSIS
+    ↓
+CONFIDENCE ASSESSMENT
+    ↓
+HUMAN REVIEW WHEN REQUIRED
+    ↓
+INTELLIGENCE ASSESSMENT
+    ↓
+CUSTOMER DELIVERY
+High-risk categories may require additional review:
+Political allegations.
+Conflict.
+Misinformation.
+Public safety.
+Defamation-sensitive claims.
+The system should retain:
+AI Assessment
+Human Assessment
+Final Assessment
+
+20. Alerting Architecture
+Not every signal should generate an alert.
+The hierarchy should be:
+INFORMATION
+    ↓
+SIGNAL
+    ↓
+EVENT
+    ↓
+SITUATION
+    ↓
+ALERT
+Alerts should consider:
+Severity
+Confidence
+Urgency
+Novelty
+Trajectory
+Customer Exposure
+Example:
+Monitoring
+Increased mentions of Company X.
+Watchlist
+Community opposition is increasing.
+Situation Alert
+Protest mobilisation is escalating.
+Critical Alert
+Operational disruption may occur within 24 hours.
+
+21. Customer Segments
+Investors
+Use cases:
+Country intelligence.
+Portfolio exposure.
+Political risk.
+Regulatory changes.
+Operational disruption.
+Emerging opportunities.
+Mining Companies
+Use cases:
+Community relations.
+Protest monitoring.
+Operational risk.
+Regulatory intelligence.
+Stakeholder intelligence.
+Financial Institutions
+Use cases:
+Country risk.
+Client risk.
+Sector exposure.
+Political risk.
+Reputation risk.
+Government Departments
+Use cases:
+Regional situation awareness.
+Public sentiment.
+Emerging crises.
+Policy response.
+Misinformation monitoring.
+Municipalities
+Use cases:
+Community grievances.
+Service delivery issues.
+Protest risk.
+Infrastructure disruption.
+Corporate Communications
+Use cases:
+Reputation monitoring.
+Narrative intelligence.
+Crisis detection.
+Executive risk.
+Stakeholder monitoring.
+NGOs
+Use cases:
+Humanitarian situations.
+Conflict.
+Community issues.
+Policy changes.
+Programme risk.
+Political Organisations
+Use cases:
+Public sentiment.
+Emerging issues.
+Political narratives.
+Geographic mobilisation.
+Opposition activity.
+
+22. Product Experience
+The user interface should be built around the eight questions rather than the data sources.
+A situation page:
+SITUATION
+Community opposition to Mining Project X
+
+1. WHAT IS HAPPENING?
+Summary of current situation.
+
+2. IS IT GETTING WORSE OR BETTER?
+Trajectory and supporting evidence.
+
+3. WHERE?
+Map and affected locations.
+
+4. WHO?
+Actors and relationships.
+
+5. WHAT IS DRIVING IT?
+Root causes, triggers and catalysts.
+
+6. WHAT HAPPENS NEXT?
+Potential developments and time horizons.
+
+7. HOW AM I EXPOSED?
+Customer-specific impact.
+
+8. WHAT SHOULD I DO?
+Recommended actions.
+The user should be able to inspect the evidence behind every conclusion.
+
+23. The Technical Architecture
+A conceptual architecture:
+┌─────────────────────────────────────────────┐
+│                 DATA SOURCES                │
+├─────────────────────────────────────────────┤
+│ News │ Radio │ Social │ Government │ Data   │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│             INGESTION LAYER                 │
+├─────────────────────────────────────────────┤
+│ APIs │ RSS │ Crawlers │ Stream Capture      │
+│ Document Processing │ Connectors             │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│           NORMALISATION LAYER               │
+├─────────────────────────────────────────────┤
+│ Deduplication │ Language │ Cleaning         │
+│ Metadata │ Provenance                        │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│            AI / ML PROCESSING                │
+├─────────────────────────────────────────────┤
+│ Classification │ NER │ Claims │ Topics      │
+│ Translation │ Sentiment │ Event Detection   │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│              INTELLIGENCE CORE              │
+├─────────────────────────────────────────────┤
+│ Event Engine │ Entity Resolution             │
+│ Knowledge Graph │ Situation Engine           │
+│ Trajectory │ Causality │ Forecasting         │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│              CUSTOMER INTELLIGENCE           │
+├─────────────────────────────────────────────┤
+│ Exposure │ Impact │ Risk │ Recommendations   │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│                DELIVERY LAYER                │
+├─────────────────────────────────────────────┤
+│ Dashboard │ Alerts │ Reports │ API           │
+│ Email │ WhatsApp │ Integrations              │
+└─────────────────────────────────────────────┘
+
+24. Core Technical Components
+The platform should eventually contain:
+Source Registry
+Maintains all monitored sources.
+Ingestion Engine
+Collects information.
+Stream Sensor Engine
+Captures radio and other live streams.
+Processing Queue
+Handles asynchronous processing.
+Classification Engine
+Determines content type.
+Entity Extraction Engine
+Identifies entities.
+Entity Resolution Engine
+Connects aliases to canonical entities.
+Claim Engine
+Extracts and tracks claims.
+Event Engine
+Identifies discrete events.
+Event Clustering Engine
+Connects related observations.
+Knowledge Graph
+Stores relationships.
+Situation Engine
+Builds developing situations.
+Trajectory Engine
+Determines whether situations are worsening or improving.
+Causality Engine
+Identifies drivers and relationships.
+Forecasting Engine
+Identifies potential next developments.
+Exposure Engine
+Maps situations to customer profiles.
+Recommendation Engine
+Produces role-specific action guidance.
+
+25. The Strategic Data Moat
+The most important long-term asset is not merely the software.
+It is the historical intelligence graph.
+Over time:
+Sources
+    ↓
+Signals
+    ↓
+Events
+    ↓
+Situations
+    ↓
+Trajectories
+    ↓
+Outcomes
+SignalDesk can eventually learn:
+When situations with particular combinations of actors, grievances, locations and escalation patterns develop, what outcomes tend to follow?
+This creates a proprietary dataset of:
+African Events
+African Situations
+African Actors
+African Relationships
+African Outcomes
+This is particularly valuable because African situations are often poorly represented in global datasets.
+The platform's long-term moat may therefore be:
+The African Situation Graph
+A historical database of:
+What happened.
+Where it happened.
+Who was involved.
+What drove it.
+How it developed.
+What happened next.
+What the outcome was.
+
+26. The Core Product Philosophy
+SignalDesk should follow five principles.
+1. Evidence Before Intelligence
+Every conclusion should be traceable.
+2. Context Over Volume
+The platform should reduce information overload, not increase it.
+3. Situations Over Mentions
+A mention is not necessarily an event.
+An event is not necessarily a situation.
+4. Exposure Over Generality
+The most valuable intelligence is specific to the customer.
+5. Action Over Information
+The final output should help someone make a decision.
+
+27. What SignalDesk Is Ultimately Building
+The final product can be expressed as:
+THE WORLD
+    ↓
+OBSERVED THROUGH MULTIPLE SENSORS
+    ↓
+CONVERTED INTO STRUCTURED EVIDENCE
+    ↓
+CONNECTED INTO EVENTS
+    ↓
+CONNECTED INTO SITUATIONS
+    ↓
+ANALYSED FOR TRAJECTORY AND CAUSE
+    ↓
+MAPPED TO CUSTOMER EXPOSURE
+    ↓
+CONVERTED INTO DECISION INTELLIGENCE
+Or in one sentence:
+SignalDesk Africa is an African-first intelligence infrastructure platform that transforms fragmented real-world signals into evidence-backed situation intelligence, exposure analysis and recommended action.
+The architecture is:
+VECTANEWS
+    +
+RADIO INTELLIGENCE
+    +
+SOCIAL SIGNALS
+    +
+GOVERNMENT DATA
+    +
+CORPORATE DATA
+    +
+HISTORICAL INTELLIGENCE
+        ↓
+SIGNALDESK INTELLIGENCE ENGINE
+        ↓
+EVENTS
+        ↓
+SITUATIONS
+        ↓
+TRAJECTORIES
+        ↓
+EXPOSURE
+        ↓
+DECISIONS
+The core promise remains:
+What is happening?
+Is it getting worse or better?
+Where is it happening?
+Who is involved?
+What is driving it?
+What happens next?
+How am I exposed?
+What should I do?
+That is the product.
+Everything else—VectaNews, Qisimah, radio monitoring, social listening, entity resolution, knowledge graphs, AI models and data pipelines—exists to answer those eight questions accurately, continuously and in an evidence-backed way.
+
+28. The Final Definition
+SignalDesk Africa is not fundamentally a media company.
+It is not fundamentally a news company.
+It is not fundamentally an AI company.
+It is not fundamentally a monitoring company.
+It is an:
+African Situation Intelligence Infrastructure Platform
+Its job is to build a continuously updated model of what is happening across Africa and the wider world, understand how situations evolve, determine how those situations affect specific organisations, and provide actionable intelligence.
+The deepest product architecture is therefore:
+SENSORS
+    ↓
+OBSERVATIONS
+    ↓
+CLAIMS
+    ↓
+ENTITIES
+    ↓
+EVENTS
+    ↓
+RELATIONSHIPS
+    ↓
+SITUATIONS
+    ↓
+TRAJECTORY
+    ↓
+CAUSE
+    ↓
+FORECAST
+    ↓
+EXPOSURE
+    ↓
+IMPACT
+    ↓
+ACTION
+This is the foundation for the eventual:
+Detailed Product Requirements Document.
+System Design Document.
+Data Model.
+AI/ML Architecture.
+Business Plan.
+Go-to-Market Strategy.
+Enterprise Product Packages.
+API Strategy.
+Investor Pitch.
+Technical Implementation Roadmap.
+SignalDesk should be built as an intelligence operating system, with VectaNews, Qisimah and future sensors operating as specialised observation systems plugged into one shared intelligence core.

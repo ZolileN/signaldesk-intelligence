@@ -1,0 +1,1498 @@
+
+SignalDesk Africa — PostgreSQL Database Implementation
+0. Target Stack
+PostgreSQL 16+
+PostGIS
+pgvector
+citext
+pgcrypto
+
+Recommended database architecture:
+PostgreSQL
+├── Relational system of record
+├── PostGIS spatial intelligence
+├── pgvector semantic search
+├── JSONB flexible metadata
+└── Outbox event publishing
+
+The database is not merely a storage layer. It is the canonical intelligence graph:
+Sources
+   ↓
+Observations
+   ↓
+Claims
+   ↓
+Entities
+   ↓
+Events
+   ↓
+Situations
+   ↓
+Trajectories
+   ↓
+Customer Assets
+   ↓
+Exposures
+   ↓
+Recommendations
+
+
+1. Migration Order
+The migration sequence should be:
+001_extensions.sql
+002_schema.sql
+003_enums.sql
+004_tenancy.sql
+005_sources.sql
+006_observations.sql
+007_entities.sql
+008_claims.sql
+009_events.sql
+010_situations.sql
+011_evidence.sql
+012_customer_exposure.sql
+013_watchlists.sql
+014_model_provenance.sql
+015_outbox.sql
+016_indexes.sql
+017_triggers.sql
+018_views.sql
+019_seed_reference_data.sql
+
+The order matters because later tables depend on earlier tables.
+
+2. Migration 001 — Extensions
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS citext;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+Why each extension exists
+Extension
+Purpose
+postgis
+Geographic locations, radius searches, spatial exposure
+vector
+Embeddings and semantic similarity
+citext
+Case-insensitive email and text comparison
+pgcrypto
+UUID generation
+
+3. Migration 002 — Database Schema
+CREATE SCHEMA IF NOT EXISTS signaldesk;
+
+SET search_path TO signaldesk, public;
+
+All SignalDesk tables should live under:
+signaldesk.*
+
+This prevents collisions with other applications sharing the same PostgreSQL instance.
+
+4. Migration 003 — Enumerations
+Organisation Types
+CREATE TYPE organisation_type AS ENUM (
+    'MINING_COMPANY',
+    'INVESTMENT_FIRM',
+    'FINANCIAL_INSTITUTION',
+    'CORPORATE',
+    'GOVERNMENT',
+    'MUNICIPALITY',
+    'PROVINCIAL_GOVERNMENT',
+    'NGO',
+    'POLITICAL_ORGANISATION',
+    'RESEARCH_INSTITUTION',
+    'MEDIA_ORGANISATION',
+    'OTHER'
+);
+
+
+User Roles
+CREATE TYPE member_role AS ENUM (
+    'OWNER',
+    'ADMIN',
+    'ANALYST',
+    'EXECUTIVE',
+    'VIEWER'
+);
+
+
+Source Types
+CREATE TYPE source_type AS ENUM (
+    'NEWS_PUBLICATION',
+    'RADIO_STATION',
+    'TELEVISION_STATION',
+    'SOCIAL_ACCOUNT',
+    'GOVERNMENT',
+    'CORPORATE',
+    'REGULATOR',
+    'NGO',
+    'RESEARCH_INSTITUTION',
+    'PUBLIC_DATASET',
+    'CUSTOMER_PROVIDED'
+);
+
+
+Content Types
+CREATE TYPE content_type AS ENUM (
+    'ARTICLE',
+    'AUDIO',
+    'VIDEO',
+    'SOCIAL_POST',
+    'DOCUMENT',
+    'PRESS_RELEASE',
+    'GOVERNMENT_NOTICE',
+    'DATASET'
+);
+
+
+Processing Status
+CREATE TYPE processing_status AS ENUM (
+    'PENDING',
+    'PROCESSING',
+    'COMPLETED',
+    'FAILED',
+    'REQUIRES_REVIEW'
+);
+
+
+Claims
+CREATE TYPE claim_type AS ENUM (
+    'FACTUAL_ASSERTION',
+    'ALLEGATION',
+    'RUMOUR',
+    'PREDICTION',
+    'OPINION',
+    'NARRATIVE',
+    'DENIAL',
+    'WARNING',
+    'COMMITMENT'
+);
+
+CREATE TYPE verification_status AS ENUM (
+    'VERIFIED',
+    'PARTIALLY_VERIFIED',
+    'CONTESTED',
+    'UNVERIFIED',
+    'FALSE',
+    'MISLEADING'
+);
+
+
+Entities
+CREATE TYPE entity_type AS ENUM (
+    'PERSON',
+    'ORGANISATION',
+    'COMPANY',
+    'GOVERNMENT',
+    'POLITICAL_PARTY',
+    'NGO',
+    'COMMUNITY',
+    'LOCATION',
+    'COUNTRY',
+    'CITY',
+    'MUNICIPALITY',
+    'PROVINCE',
+    'ASSET',
+    'MINE',
+    'FACILITY',
+    'ROAD',
+    'PORT',
+    'AIRPORT',
+    'POLICY',
+    'LAW',
+    'REGULATION',
+    'PRODUCT',
+    'EVENT_ORGANISATION'
+);
+
+
+Entity Resolution
+CREATE TYPE resolution_status AS ENUM (
+    'PENDING',
+    'RESOLVED',
+    'AMBIGUOUS',
+    'UNRESOLVED',
+    'REJECTED'
+);
+
+
+Events
+CREATE TYPE event_status AS ENUM (
+    'DETECTED',
+    'CONFIRMED',
+    'DEVELOPING',
+    'COMPLETED',
+    'DISPUTED',
+    'CANCELLED'
+);
+
+
+Situations
+CREATE TYPE situation_type AS ENUM (
+    'POLITICAL_CRISIS',
+    'SOCIAL_UNREST',
+    'COMMUNITY_CONFLICT',
+    'REGULATORY_CHANGE',
+    'MARKET_DISRUPTION',
+    'INVESTMENT_OPPORTUNITY',
+    'SECURITY_SITUATION',
+    'ENVIRONMENTAL_CRISIS',
+    'INFRASTRUCTURE_DISRUPTION',
+    'REPUTATIONAL_CRISIS',
+    'PUBLIC_HEALTH_SITUATION',
+    'DIPLOMATIC_TENSION',
+    'SUPPLY_CHAIN_DISRUPTION'
+);
+
+CREATE TYPE situation_status AS ENUM (
+    'DORMANT',
+    'EMERGING',
+    'DEVELOPING',
+    'ESCALATING',
+    'CRITICAL',
+    'STABILISING',
+    'DE_ESCALATING',
+    'RESOLVED',
+    'HISTORICAL'
+);
+
+
+Trajectory
+CREATE TYPE trajectory_direction AS ENUM (
+    'STABLE',
+    'IMPROVING',
+    'DETERIORATING',
+    'ESCALATING',
+    'VOLATILE',
+    'UNCERTAIN'
+);
+
+
+Severity
+CREATE TYPE severity_level AS ENUM (
+    'LOW',
+    'MEDIUM',
+    'HIGH',
+    'CRITICAL'
+);
+
+
+5. Migration 004 — Tenancy
+Organisations
+CREATE TABLE organisations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    name TEXT NOT NULL,
+
+    organisation_type organisation_type NOT NULL,
+
+    country_code CHAR(2),
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Users
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    email CITEXT UNIQUE NOT NULL,
+
+    full_name TEXT,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Organisation Membership
+CREATE TABLE organisation_members (
+    organisation_id UUID NOT NULL
+        REFERENCES organisations(id)
+        ON DELETE CASCADE,
+
+    user_id UUID NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    role member_role NOT NULL,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    PRIMARY KEY (
+        organisation_id,
+        user_id
+    )
+);
+
+This provides multi-tenancy from day one.
+A mining company, municipality and investment fund can all use the same platform while their data remains logically separated.
+
+6. Migration 005 — Sources
+CREATE TABLE sources (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    name TEXT NOT NULL,
+
+    source_type source_type NOT NULL,
+
+    country_code CHAR(2),
+
+    language_codes TEXT[] NOT NULL DEFAULT '{}',
+
+    url TEXT,
+
+    reliability_score NUMERIC(5,4)
+        CHECK (reliability_score BETWEEN 0 AND 1),
+
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Radio Stations
+Radio-specific information should not clutter the generic sources table.
+CREATE TABLE radio_stations (
+    source_id UUID PRIMARY KEY
+        REFERENCES sources(id)
+        ON DELETE CASCADE,
+
+    call_sign TEXT,
+
+    stream_url TEXT NOT NULL,
+
+    stream_format TEXT,
+
+    timezone TEXT NOT NULL
+        DEFAULT 'Africa/Johannesburg',
+
+    schedule JSONB NOT NULL DEFAULT '{}',
+
+    monitoring_priority INTEGER NOT NULL DEFAULT 50,
+
+    stream_status TEXT,
+
+    last_heartbeat_at TIMESTAMPTZ,
+
+    metadata JSONB NOT NULL DEFAULT '{}'
+);
+
+This lets the generic source model support:
+News
+Radio
+TV
+Social
+Government
+Corporate
+
+without forcing every source to have radio-specific fields.
+
+7. Migration 006 — Observations
+An observation is the original captured information.
+CREATE TABLE observations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    source_id UUID NOT NULL
+        REFERENCES sources(id)
+        ON DELETE RESTRICT,
+
+    content_type content_type NOT NULL,
+
+    title TEXT,
+
+    raw_content TEXT,
+
+    transcript TEXT,
+
+    source_url TEXT,
+
+    published_at TIMESTAMPTZ,
+
+    captured_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    language_code TEXT,
+
+    country_code CHAR(2),
+
+    location GEOGRAPHY(POINT, 4326),
+
+    content_hash TEXT NOT NULL UNIQUE,
+
+    storage_reference TEXT,
+
+    processing_status processing_status
+        NOT NULL DEFAULT 'PENDING',
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+Important principle
+The observation is immutable.
+The system should never overwrite:
+What was actually captured?
+
+Instead, AI interpretations are stored separately.
+
+Audio Segments
+CREATE TABLE audio_segments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    observation_id UUID NOT NULL
+        REFERENCES observations(id)
+        ON DELETE CASCADE,
+
+    segment_start TIMESTAMPTZ NOT NULL,
+
+    segment_end TIMESTAMPTZ NOT NULL,
+
+    audio_reference TEXT NOT NULL,
+
+    duration_seconds NUMERIC(10,3),
+
+    codec TEXT,
+
+    sample_rate INTEGER,
+
+    channels INTEGER,
+
+    content_classification TEXT,
+
+    classification_confidence NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CHECK (
+        segment_end > segment_start
+    )
+);
+
+This supports the SignalDesk radio architecture:
+Radio stream
+    ↓
+Audio segment
+    ↓
+Speech recognition
+    ↓
+Observation
+
+
+8. Migration 007 — Entities
+CREATE TABLE entities (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    canonical_name TEXT NOT NULL,
+
+    entity_type entity_type NOT NULL,
+
+    description TEXT,
+
+    country_code CHAR(2),
+
+    aliases TEXT[] NOT NULL DEFAULT '{}',
+
+    external_identifiers JSONB NOT NULL DEFAULT '{}',
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    confidence_score NUMERIC(5,4)
+        CHECK (confidence_score BETWEEN 0 AND 1),
+
+    embedding vector(1536),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+The embedding allows semantic matching:
+"President Cyril Ramaphosa"
+"Ramaphosa"
+"South African President"
+
+to potentially resolve to the same canonical entity.
+
+Entity Aliases
+CREATE TABLE entity_aliases (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    entity_id UUID NOT NULL
+        REFERENCES entities(id)
+        ON DELETE CASCADE,
+
+    alias TEXT NOT NULL,
+
+    language_code TEXT,
+
+    alias_type TEXT,
+
+    UNIQUE (
+        entity_id,
+        alias
+    )
+);
+
+
+Entity Mentions
+CREATE TABLE entity_mentions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    observation_id UUID NOT NULL
+        REFERENCES observations(id)
+        ON DELETE CASCADE,
+
+    entity_id UUID
+        REFERENCES entities(id)
+        ON DELETE SET NULL,
+
+    mention_text TEXT NOT NULL,
+
+    entity_type entity_type,
+
+    start_offset INTEGER,
+
+    end_offset INTEGER,
+
+    resolution_confidence NUMERIC(5,4),
+
+    resolution_status resolution_status
+        NOT NULL DEFAULT 'PENDING',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+The separation is important:
+Mention:
+"Ramaphosa"
+
+Canonical Entity:
+Cyril Ramaphosa
+
+
+9. Migration 008 — Claims
+CREATE TABLE claims (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    observation_id UUID NOT NULL
+        REFERENCES observations(id)
+        ON DELETE CASCADE,
+
+    claim_text TEXT NOT NULL,
+
+    claim_type claim_type NOT NULL,
+
+    claimant_entity_id UUID
+        REFERENCES entities(id)
+        ON DELETE SET NULL,
+
+    temporal_reference JSONB,
+
+    geographic_reference JSONB,
+
+    verification_status verification_status
+        NOT NULL DEFAULT 'UNVERIFIED',
+
+    confidence_score NUMERIC(5,4)
+        CHECK (confidence_score BETWEEN 0 AND 1),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+The database must distinguish:
+A claim exists
+
+from:
+The claim is true
+
+That is foundational for misinformation and narrative analysis.
+
+10. Migration 009 — Events
+CREATE TABLE events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    event_type TEXT NOT NULL,
+
+    title TEXT NOT NULL,
+
+    description TEXT,
+
+    start_time TIMESTAMPTZ,
+
+    end_time TIMESTAMPTZ,
+
+    location GEOGRAPHY(POINT, 4326),
+
+    severity severity_level,
+
+    confidence_score NUMERIC(5,4)
+        CHECK (confidence_score BETWEEN 0 AND 1),
+
+    status event_status
+        NOT NULL DEFAULT 'DETECTED',
+
+    embedding vector(1536),
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Event Observations
+CREATE TABLE event_observations (
+    event_id UUID NOT NULL
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    observation_id UUID NOT NULL
+        REFERENCES observations(id)
+        ON DELETE CASCADE,
+
+    relevance_score NUMERIC(5,4),
+
+    PRIMARY KEY (
+        event_id,
+        observation_id
+    )
+);
+
+
+Event Claims
+CREATE TABLE event_claims (
+    event_id UUID NOT NULL
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    claim_id UUID NOT NULL
+        REFERENCES claims(id)
+        ON DELETE CASCADE,
+
+    relevance_score NUMERIC(5,4),
+
+    PRIMARY KEY (
+        event_id,
+        claim_id
+    )
+);
+
+
+Event Entities
+CREATE TABLE event_entities (
+    event_id UUID NOT NULL
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    entity_id UUID NOT NULL
+        REFERENCES entities(id)
+        ON DELETE CASCADE,
+
+    role TEXT NOT NULL,
+
+    confidence_score NUMERIC(5,4),
+
+    PRIMARY KEY (
+        event_id,
+        entity_id,
+        role
+    )
+);
+
+Example:
+Event:
+Illegal mining protest
+
+Community → ACTOR
+Mining company → TARGET
+Municipality → RESPONDER
+Location → LOCATION
+
+
+Event Relationships
+CREATE TABLE event_relationships (
+    source_event_id UUID NOT NULL
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    target_event_id UUID NOT NULL
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    relationship_type TEXT NOT NULL,
+
+    confidence_score NUMERIC(5,4),
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    PRIMARY KEY (
+        source_event_id,
+        target_event_id,
+        relationship_type
+    ),
+
+    CHECK (
+        source_event_id <> target_event_id
+    )
+);
+
+Relationships:
+CAUSES
+TRIGGERS
+FOLLOWS
+ESCALATES
+DE_ESCALATES
+CONTRADICTS
+CORROBORATES
+PRECEDES
+RESULTS_IN
+RESPONDS_TO
+
+
+11. Migration 010 — Situations
+This is the centre of the platform.
+CREATE TABLE situations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    title TEXT NOT NULL,
+
+    summary TEXT,
+
+    situation_type situation_type NOT NULL,
+
+    status situation_status
+        NOT NULL DEFAULT 'EMERGING',
+
+    trajectory trajectory_direction,
+
+    severity severity_level,
+
+    confidence_score NUMERIC(5,4)
+        CHECK (confidence_score BETWEEN 0 AND 1),
+
+    start_time TIMESTAMPTZ,
+
+    last_activity_at TIMESTAMPTZ,
+
+    geographic_scope JSONB NOT NULL DEFAULT '{}',
+
+    drivers JSONB NOT NULL DEFAULT '[]',
+
+    potential_outcomes JSONB NOT NULL DEFAULT '[]',
+
+    embedding vector(1536),
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Situation Events
+CREATE TABLE situation_events (
+    situation_id UUID NOT NULL
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    event_id UUID NOT NULL
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    relationship_type TEXT,
+
+    relevance_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    PRIMARY KEY (
+        situation_id,
+        event_id
+    )
+);
+
+
+Situation Entities
+CREATE TABLE situation_entities (
+    situation_id UUID NOT NULL
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    entity_id UUID NOT NULL
+        REFERENCES entities(id)
+        ON DELETE CASCADE,
+
+    role TEXT NOT NULL,
+
+    influence_score NUMERIC(5,4),
+
+    involvement_score NUMERIC(5,4),
+
+    PRIMARY KEY (
+        situation_id,
+        entity_id,
+        role
+    )
+);
+
+
+12. Migration 011 — Trajectory
+The system must be able to answer:
+Is it getting worse or better?
+without simply asking an LLM.
+CREATE TABLE situation_trajectory_snapshots (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    situation_id UUID NOT NULL
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    trajectory trajectory_direction NOT NULL,
+
+    trajectory_score NUMERIC(8,4),
+
+    event_frequency NUMERIC(8,4),
+
+    severity_score NUMERIC(8,4),
+
+    actor_expansion_score NUMERIC(8,4),
+
+    geographic_expansion_score NUMERIC(8,4),
+
+    narrative_intensity_score NUMERIC(8,4),
+
+    institutional_response_score NUMERIC(8,4),
+
+    explanation TEXT,
+
+    recorded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+Example:
+Events last 7 days: 4
+Events current 7 days: 17
+
+Event frequency:
++325%
+
+Actor count:
++40%
+
+Geographic spread:
++2 provinces
+
+The platform can therefore determine:
+Trajectory = ESCALATING
+
+The LLM then explains why.
+
+13. Migration 012 — Evidence
+CREATE TYPE evidence_type AS ENUM (
+    'DIRECT',
+    'CORROBORATING',
+    'INDIRECT',
+    'CONTRADICTORY',
+    'HISTORICAL',
+    'ANALYTICAL'
+);
+
+CREATE TABLE evidence (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    observation_id UUID
+        REFERENCES observations(id)
+        ON DELETE CASCADE,
+
+    claim_id UUID
+        REFERENCES claims(id)
+        ON DELETE CASCADE,
+
+    event_id UUID
+        REFERENCES events(id)
+        ON DELETE CASCADE,
+
+    situation_id UUID
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    evidence_type evidence_type NOT NULL,
+
+    relevance_score NUMERIC(5,4),
+
+    reliability_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CHECK (
+        observation_id IS NOT NULL
+        OR claim_id IS NOT NULL
+        OR event_id IS NOT NULL
+        OR situation_id IS NOT NULL
+    )
+);
+
+
+14. Migration 013 — Customer Exposure
+Customer Assets
+CREATE TABLE customer_assets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    organisation_id UUID NOT NULL
+        REFERENCES organisations(id)
+        ON DELETE CASCADE,
+
+    entity_id UUID
+        REFERENCES entities(id)
+        ON DELETE SET NULL,
+
+    asset_type TEXT NOT NULL,
+
+    name TEXT NOT NULL,
+
+    location GEOGRAPHY(POINT, 4326),
+
+    metadata JSONB NOT NULL DEFAULT '{}',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+Examples:
+Mine
+Factory
+Investment
+Project
+Port
+Office
+Supply Chain
+Political Constituency
+Municipality
+Infrastructure Asset
+
+
+Exposures
+CREATE TYPE exposure_type AS ENUM (
+    'DIRECT',
+    'INDIRECT',
+    'FINANCIAL',
+    'OPERATIONAL',
+    'REGULATORY',
+    'REPUTATIONAL',
+    'POLITICAL',
+    'SECURITY',
+    'SUPPLY_CHAIN',
+    'MARKET'
+);
+
+CREATE TABLE exposures (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    organisation_id UUID NOT NULL
+        REFERENCES organisations(id)
+        ON DELETE CASCADE,
+
+    situation_id UUID NOT NULL
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    asset_id UUID
+        REFERENCES customer_assets(id)
+        ON DELETE SET NULL,
+
+    exposure_type exposure_type NOT NULL,
+
+    exposure_score NUMERIC(5,4),
+
+    impact_score NUMERIC(5,4),
+
+    probability_score NUMERIC(5,4),
+
+    time_horizon TEXT,
+
+    explanation TEXT,
+
+    confidence_score NUMERIC(5,4),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    UNIQUE (
+        organisation_id,
+        situation_id,
+        asset_id,
+        exposure_type
+    )
+);
+
+This is where SignalDesk becomes more than a news platform.
+A situation is not merely:
+"Something happened."
+
+It becomes:
+"This situation may affect YOUR mine, YOUR investment, YOUR project or YOUR political constituency."
+
+
+15. Migration 014 — Recommendations and Alerts
+Recommendations
+CREATE TABLE recommendations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    organisation_id UUID NOT NULL
+        REFERENCES organisations(id)
+        ON DELETE CASCADE,
+
+    situation_id UUID NOT NULL
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    exposure_id UUID
+        REFERENCES exposures(id)
+        ON DELETE SET NULL,
+
+    recommendation_type TEXT NOT NULL,
+
+    recommendation_text TEXT NOT NULL,
+
+    urgency alert_level,
+
+    confidence_score NUMERIC(5,4),
+
+    status TEXT NOT NULL DEFAULT 'ACTIVE',
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Alerts
+CREATE TYPE alert_level AS ENUM (
+    'INFORMATION',
+    'WATCH',
+    'ELEVATED',
+    'HIGH',
+    'CRITICAL'
+);
+
+CREATE TABLE alerts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    organisation_id UUID NOT NULL
+        REFERENCES organisations(id)
+        ON DELETE CASCADE,
+
+    situation_id UUID NOT NULL
+        REFERENCES situations(id)
+        ON DELETE CASCADE,
+
+    alert_level alert_level NOT NULL,
+
+    title TEXT NOT NULL,
+
+    message TEXT NOT NULL,
+
+    reason TEXT,
+
+    read_at TIMESTAMPTZ,
+
+    acknowledged_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+16. Migration 015 — Watchlists
+CREATE TABLE watchlists (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    organisation_id UUID NOT NULL
+        REFERENCES organisations(id)
+        ON DELETE CASCADE,
+
+    name TEXT NOT NULL,
+
+    description TEXT,
+
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+
+Watchlist Entities
+CREATE TABLE watchlist_entities (
+    watchlist_id UUID NOT NULL
+        REFERENCES watchlists(id)
+        ON DELETE CASCADE,
+
+    entity_id UUID NOT NULL
+        REFERENCES entities(id)
+        ON DELETE CASCADE,
+
+    PRIMARY KEY (
+        watchlist_id,
+        entity_id
+    )
+);
+
+
+Watchlist Topics
+CREATE TABLE watchlist_topics (
+    watchlist_id UUID NOT NULL
+        REFERENCES watchlists(id)
+        ON DELETE CASCADE,
+
+    topic TEXT NOT NULL,
+
+    PRIMARY KEY (
+        watchlist_id,
+        topic
+    )
+);
+
+
+17. Migration 016 — AI/ML Provenance
+Every AI output must be traceable.
+CREATE TABLE model_runs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    model_name TEXT NOT NULL,
+
+    model_version TEXT NOT NULL,
+
+    input_type TEXT NOT NULL,
+
+    input_id UUID,
+
+    output JSONB NOT NULL,
+
+    confidence_score NUMERIC(5,4),
+
+    processing_time_ms INTEGER,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+Example:
+Model:
+entity-resolution-v2
+
+Input:
+Observation UUID
+
+Output:
+Resolved "Ramaphosa" → Entity UUID
+
+Confidence:
+0.97
+
+This is critical for:
+Debugging
+Auditing
+Model evaluation
+Human review
+Regulatory defensibility
+
+
+18. Migration 017 — Outbox
+SignalDesk should use the Transactional Outbox Pattern.
+CREATE TABLE outbox_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    event_type TEXT NOT NULL,
+
+    aggregate_type TEXT NOT NULL,
+
+    aggregate_id UUID NOT NULL,
+
+    payload JSONB NOT NULL,
+
+    published_at TIMESTAMPTZ,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+Example:
+Transaction:
+Create Event
+
+Same Transaction:
+Create outbox_events row
+
+Worker:
+Reads outbox_events
+        ↓
+Publishes EventDetected
+        ↓
+Marks published_at
+
+This prevents the classic problem:
+Database write succeeded
+BUT
+message queue publish failed
+
+
+19. Migration 018 — Indexes
+Source Indexes
+CREATE INDEX idx_sources_type
+ON sources(source_type);
+
+CREATE INDEX idx_sources_country
+ON sources(country_code);
+
+CREATE INDEX idx_sources_active
+ON sources(active);
+
+
+Observation Indexes
+CREATE INDEX idx_observations_source
+ON observations(source_id);
+
+CREATE INDEX idx_observations_published_at
+ON observations(published_at DESC);
+
+CREATE INDEX idx_observations_captured_at
+ON observations(captured_at DESC);
+
+CREATE INDEX idx_observations_processing_status
+ON observations(processing_status);
+
+CREATE INDEX idx_observations_location
+ON observations
+USING GIST(location);
+
+
+Entity Indexes
+CREATE INDEX idx_entities_type
+ON entities(entity_type);
+
+CREATE INDEX idx_entities_country
+ON entities(country_code);
+
+
+Vector Indexes
+CREATE INDEX idx_entities_embedding
+ON entities
+USING hnsw (embedding vector_cosine_ops);
+
+CREATE INDEX idx_events_embedding
+ON events
+USING hnsw (embedding vector_cosine_ops);
+
+CREATE INDEX idx_situations_embedding
+ON situations
+USING hnsw (embedding vector_cosine_ops);
+
+Important implementation note
+vector(1536) assumes the selected embedding model produces 1,536-dimensional vectors.
+If the chosen embedding model has a different dimensionality, the schema must be changed consistently.
+
+20. Migration 019 — Updated Timestamp Trigger
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = now();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+Apply to mutable tables:
+CREATE TRIGGER trg_organisations_updated_at
+BEFORE UPDATE ON organisations
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_users_updated_at
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_sources_updated_at
+BEFORE UPDATE ON sources
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_entities_updated_at
+BEFORE UPDATE ON entities
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_events_updated_at
+BEFORE UPDATE ON events
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_situations_updated_at
+BEFORE UPDATE ON situations
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER trg_exposures_updated_at
+BEFORE UPDATE ON exposures
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+
+21. Core Intelligence Query
+The eight questions should be represented through a read model.
+CREATE VIEW situation_intelligence AS
+SELECT
+    s.id AS situation_id,
+
+    s.title,
+
+    s.summary,
+
+    s.situation_type,
+
+    s.status,
+
+    s.trajectory,
+
+    s.severity,
+
+    s.confidence_score,
+
+    s.start_time,
+
+    s.last_activity_at,
+
+    s.geographic_scope,
+
+    s.drivers,
+
+    s.potential_outcomes,
+
+    s.created_at,
+
+    s.updated_at
+
+FROM situations s;
+
+The API layer then enriches this with:
+Events
+Actors
+Evidence
+Trajectory history
+Exposure
+Recommendations
+
+
+22. The Actual SignalDesk Intelligence Graph
+The relational model now represents:
+┌─────────────┐
+│   SOURCES   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ OBSERVATIONS│
+└──────┬──────┘
+       │
+ ┌─────┴─────┐
+ ▼           ▼
+CLAIMS     ENTITIES
+ │           │
+ └─────┬─────┘
+       ▼
+┌─────────────┐
+│    EVENTS   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  SITUATIONS │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ TRAJECTORY  │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  EXPOSURE   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ RECOMMEND.  │
+└─────────────┘
+
+This is the core technical model of SignalDesk.
+
+23. Recommended Migration Repository
+The actual project should look like this:
+database/
+└── migrations/
+    ├── 001_extensions.sql
+    ├── 002_schema.sql
+    ├── 003_enums.sql
+    ├── 004_tenancy.sql
+    ├── 005_sources.sql
+    ├── 006_observations.sql
+    ├── 007_entities.sql
+    ├── 008_claims.sql
+    ├── 009_events.sql
+    ├── 010_situations.sql
+    ├── 011_trajectory.sql
+    ├── 012_evidence.sql
+    ├── 013_customer_exposure.sql
+    ├── 014_alerts_recommendations.sql
+    ├── 015_watchlists.sql
+    ├── 016_model_provenance.sql
+    ├── 017_outbox.sql
+    ├── 018_indexes.sql
+    ├── 019_triggers.sql
+    └── 020_views.sql
+
+My recommendation
+For the first implementation, do not build the entire database at once.
+Build the first vertical slice:
+VectaNews
+    ↓
+Observation
+    ↓
+Entity Extraction
+    ↓
+Event Detection
+    ↓
+Situation Creation
+    ↓
+Eight-Question Situation API
+
+The minimum production-worthy core is:
+sources
+observations
+entities
+entity_mentions
+claims
+events
+event_observations
+event_entities
+situations
+situation_events
+situation_entities
+situation_trajectory_snapshots
+
+Then add:
+customer_assets
+exposures
+alerts
+recommendations
+
+once the core intelligence graph is functioning.
+The crucial architectural decision is that the database schema must be built around the Situation, not around articles, radio broadcasts or news stories. Those are merely sensors. The durable asset is the continuously evolving intelligence model of what is happening in the world.

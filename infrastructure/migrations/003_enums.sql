@@ -1,0 +1,196 @@
+-- 003_enums.sql
+SET search_path TO signaldesk, public;
+
+CREATE TYPE organisation_type AS ENUM (
+    'MINING_COMPANY',
+    'INVESTMENT_FIRM',
+    'FINANCIAL_INSTITUTION',
+    'CORPORATE',
+    'GOVERNMENT',
+    'MUNICIPALITY',
+    'PROVINCIAL_GOVERNMENT',
+    'NGO',
+    'POLITICAL_ORGANISATION',
+    'RESEARCH_INSTITUTION',
+    'MEDIA_ORGANISATION',
+    'OTHER'
+);
+
+CREATE TYPE member_role AS ENUM (
+    'OWNER',
+    'ADMIN',
+    'ANALYST',
+    'EXECUTIVE',
+    'VIEWER'
+);
+
+CREATE TYPE source_type AS ENUM (
+    'NEWS_PUBLICATION',
+    'RADIO_STATION',
+    'TELEVISION_STATION',
+    'SOCIAL_ACCOUNT',
+    'GOVERNMENT',
+    'CORPORATE',
+    'REGULATOR',
+    'NGO',
+    'RESEARCH_INSTITUTION',
+    'PUBLIC_DATASET',
+    'CUSTOMER_PROVIDED'
+);
+
+CREATE TYPE content_type AS ENUM (
+    'ARTICLE',
+    'AUDIO',
+    'VIDEO',
+    'SOCIAL_POST',
+    'DOCUMENT',
+    'PRESS_RELEASE',
+    'GOVERNMENT_NOTICE',
+    'DATASET'
+);
+
+CREATE TYPE processing_status AS ENUM (
+    'PENDING',
+    'PROCESSING',
+    'COMPLETED',
+    'FAILED',
+    'REQUIRES_REVIEW'
+);
+
+CREATE TYPE claim_type AS ENUM (
+    'FACTUAL_ASSERTION',
+    'ALLEGATION',
+    'RUMOUR',
+    'PREDICTION',
+    'OPINION',
+    'NARRATIVE',
+    'DENIAL',
+    'WARNING',
+    'COMMITMENT'
+);
+
+CREATE TYPE verification_status AS ENUM (
+    'VERIFIED',
+    'PARTIALLY_VERIFIED',
+    'CONTESTED',
+    'UNVERIFIED',
+    'FALSE',
+    'MISLEADING'
+);
+
+CREATE TYPE entity_type AS ENUM (
+    'PERSON',
+    'ORGANISATION',
+    'COMPANY',
+    'GOVERNMENT',
+    'POLITICAL_PARTY',
+    'NGO',
+    'COMMUNITY',
+    'LOCATION',
+    'COUNTRY',
+    'CITY',
+    'MUNICIPALITY',
+    'PROVINCE',
+    'ASSET',
+    'MINE',
+    'FACILITY',
+    'ROAD',
+    'PORT',
+    'AIRPORT',
+    'POLICY',
+    'LAW',
+    'REGULATION',
+    'PRODUCT',
+    'EVENT_ORGANISATION'
+);
+
+CREATE TYPE resolution_status AS ENUM (
+    'PENDING',
+    'RESOLVED',
+    'AMBIGUOUS',
+    'UNRESOLVED',
+    'REJECTED'
+);
+
+CREATE TYPE event_status AS ENUM (
+    'DETECTED',
+    'CONFIRMED',
+    'DEVELOPING',
+    'COMPLETED',
+    'DISPUTED',
+    'CANCELLED'
+);
+
+CREATE TYPE situation_type AS ENUM (
+    'POLITICAL_CRISIS',
+    'SOCIAL_UNREST',
+    'COMMUNITY_CONFLICT',
+    'REGULATORY_CHANGE',
+    'MARKET_DISRUPTION',
+    'INVESTMENT_OPPORTUNITY',
+    'SECURITY_SITUATION',
+    'ENVIRONMENTAL_CRISIS',
+    'INFRASTRUCTURE_DISRUPTION',
+    'REPUTATIONAL_CRISIS',
+    'PUBLIC_HEALTH_SITUATION',
+    'DIPLOMATIC_TENSION',
+    'SUPPLY_CHAIN_DISRUPTION'
+);
+
+CREATE TYPE situation_status AS ENUM (
+    'DORMANT',
+    'EMERGING',
+    'DEVELOPING',
+    'ESCALATING',
+    'CRITICAL',
+    'STABILISING',
+    'DE_ESCALATING',
+    'RESOLVED',
+    'HISTORICAL'
+);
+
+CREATE TYPE trajectory_direction AS ENUM (
+    'STABLE',
+    'IMPROVING',
+    'DETERIORATING',
+    'ESCALATING',
+    'VOLATILE',
+    'UNCERTAIN'
+);
+
+CREATE TYPE severity_level AS ENUM (
+    'LOW',
+    'MEDIUM',
+    'HIGH',
+    'CRITICAL'
+);
+
+CREATE TYPE alert_level AS ENUM (
+    'INFORMATION',
+    'WATCH',
+    'ELEVATED',
+    'HIGH',
+    'CRITICAL'
+);
+
+CREATE TYPE exposure_type AS ENUM (
+    'DIRECT',
+    'INDIRECT',
+    'FINANCIAL',
+    'OPERATIONAL',
+    'REGULATORY',
+    'REPUTATIONAL',
+    'POLITICAL',
+    'SECURITY',
+    'SUPPLY_CHAIN',
+    'MARKET'
+);
+
+CREATE TYPE evidence_type AS ENUM (
+    'DIRECT',
+    'CORROBORATING',
+    'INDIRECT',
+    'CONTRADICTORY',
+    'HISTORICAL',
+    'ANALYTICAL'
+);

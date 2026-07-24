@@ -1,0 +1,446 @@
+
+SIGNALDESK AFRICA
+AI and Machine Learning Architecture
+Version: 1.0
+
+1. Design Principle
+SignalDesk should not be built around one giant AI model.
+The correct architecture is a hybrid intelligence system:
+RULES
++
+TRADITIONAL ML
++
+EMBEDDINGS
++
+LLMs
++
+KNOWLEDGE GRAPHS
++
+TIME-SERIES ANALYSIS
++
+HUMAN REVIEW
+Each technique should be used where it is strongest.
+
+2. AI/ML Pipeline
+RAW DATA
+    ↓
+PREPROCESSING
+    ↓
+LANGUAGE DETECTION
+    ↓
+CLASSIFICATION
+    ↓
+ENTITY EXTRACTION
+    ↓
+ENTITY RESOLUTION
+    ↓
+CLAIM EXTRACTION
+    ↓
+EVENT DETECTION
+    ↓
+EVENT CLUSTERING
+    ↓
+SITUATION DETECTION
+    ↓
+TRAJECTORY ANALYSIS
+    ↓
+CAUSAL ANALYSIS
+    ↓
+FORECASTING
+    ↓
+EXPOSURE ANALYSIS
+    ↓
+RECOMMENDATION
+
+3. Language Intelligence
+The platform must identify:
+Language
+Dialect
+Code-switching
+Translation requirement
+Pipeline:
+AUDIO / TEXT
+    ↓
+LANGUAGE IDENTIFICATION
+    ↓
+SPEECH-TO-TEXT
+    ↓
+TRANSLATION
+    ↓
+CANONICAL REPRESENTATION
+The original language must be preserved.
+
+4. Content Classification
+The classifier determines:
+NEWS
+OPINION
+ANALYSIS
+ADVERTISEMENT
+ENTERTAINMENT
+SPORT
+WEATHER
+TRAFFIC
+PUBLIC_NOTICE
+POLITICAL_CONTENT
+EMERGENCY
+For radio:
+NEWS BULLETIN
+TALK SHOW
+INTERVIEW
+ADVERTISEMENT
+MUSIC
+SPORTS
+WEATHER
+TRAFFIC
+This allows the platform to prioritise processing.
+
+5. Named Entity Recognition
+NER identifies:
+PERSON
+ORGANISATION
+COMPANY
+LOCATION
+POLICY
+LAW
+ASSET
+EVENT
+The output:
+"Copper prices affect Zambia's mining sector."
+becomes:
+Copper Prices → ECONOMIC VARIABLE
+Zambia → COUNTRY
+Mining Sector → INDUSTRY
+
+6. Entity Resolution
+Entity resolution combines:
+Exact Matching
+Fuzzy Matching
+Embeddings
+Context
+Knowledge Graph
+The system should produce:
+Mention
+    ↓
+Candidate Entities
+    ↓
+Confidence
+    ↓
+Canonical Entity
+
+7. Claim Extraction
+The system extracts structured claims.
+Example:
+“The minister says the policy will be implemented next month.”
+Output:
+Claim Type:
+POLICY_COMMITMENT
+
+Claimant:
+Minister X
+
+Action:
+Policy Implementation
+
+Time:
+Next Month
+
+Confidence:
+Based on source reliability
+
+8. Event Detection
+The event detector identifies:
+Who
+Did what
+Where
+When
+To whom
+With what consequence
+Example:
+A community
+announced
+a protest
+outside Mine X
+on Friday
+over employment concerns.
+Structured event:
+Actor:
+Community X
+
+Action:
+Protest Announcement
+
+Target:
+Mine X
+
+Location:
+Location Y
+
+Time:
+Friday
+
+Driver:
+Employment Grievance
+
+9. Event Classification
+The classifier should use a hierarchical model.
+EVENT
+├── POLITICAL
+├── ECONOMIC
+├── SOCIAL
+├── SECURITY
+├── INFRASTRUCTURE
+├── ENVIRONMENTAL
+└── CORPORATE
+Then:
+SOCIAL
+    ↓
+PROTEST
+    ↓
+COMMUNITY PROTEST
+This supports flexible future expansion.
+
+10. Event Clustering
+Multiple observations may represent the same event.
+Article A
+Radio Report B
+Social Post C
+Government Statement D
+        ↓
+SAME EVENT
+Clustering should use:
+Semantic Similarity
+Time
+Geography
+Entities
+Event Type
+Actor Relationships
+The output:
+5 Observations
+    ↓
+1 Event
+
+11. Situation Detection
+Situation detection identifies when events form a broader condition.
+The system looks for:
+Temporal Connection
+Geographic Connection
+Actor Connection
+Causal Connection
+Topic Connection
+Escalation
+Example:
+Complaint
+   +
+Meeting
+   +
+Protest
+   +
+Road Closure
+becomes:
+Developing Community Conflict Situation
+
+12. Trajectory Analysis
+Trajectory analysis is a combination of:
+Time-Series Analysis
++
+Event Severity
++
+Event Frequency
++
+Actor Expansion
++
+Geographic Spread
++
+Institutional Response
+The system should calculate:
+Trajectory Score
+Conceptually:
+Trajectory =
+Change in Event Activity
++
+Change in Severity
++
+Change in Actor Participation
++
+Change in Geographic Scope
+The output:
+Improving
+Stable
+Escalating
+Volatile
+Uncertain
+The model must provide an explanation.
+
+13. Causal Analysis
+Causality should not be inferred solely from correlation.
+The system should distinguish:
+Observed Cause
+Likely Driver
+Possible Driver
+Correlation
+Unknown
+The causal graph:
+CONDITION
+    ↓
+GRIEVANCE
+    ↓
+TRIGGER
+    ↓
+CATALYST
+    ↓
+EVENT
+    ↓
+CONSEQUENCE
+The model should combine:
+Textual Evidence
+Temporal Order
+Actor Statements
+Historical Patterns
+Domain Knowledge
+
+14. Forecasting
+Forecasting should produce possible scenarios rather than false certainty.
+CURRENT SITUATION
+        ↓
+HISTORICAL COMPARABLES
+        ↓
+CURRENT TRAJECTORY
+        ↓
+ACTOR BEHAVIOUR
+        ↓
+SCHEDULED EVENTS
+        ↓
+POSSIBLE NEXT DEVELOPMENTS
+Output:
+Scenario:
+Further protest mobilisation
+
+Likelihood:
+Medium
+
+Time Horizon:
+7 days
+
+Confidence:
+Medium
+
+Evidence:
+Recent escalation indicators
+
+15. Narrative Intelligence
+The platform should detect:
+Emerging Narratives
+Narrative Growth
+Narrative Competition
+Narrative Mutation
+Narrative Spread
+Example:
+Original Narrative:
+"Foreign workers are taking jobs."
+
+Mutated Narrative:
+"Government is deliberately allowing foreigners to take jobs."
+
+Political Narrative:
+"Government has failed citizens."
+This is particularly valuable for:
+Communications teams.
+Governments.
+Political organisations.
+Investors.
+Corporates.
+
+16. Misinformation and Disinformation Analysis
+The system should not simply label information false.
+It should analyse:
+Claim
+    ↓
+Evidence
+    ↓
+Contradiction
+    ↓
+Source Network
+    ↓
+Spread
+    ↓
+Assessment
+Possible statuses:
+VERIFIED
+PARTIALLY VERIFIED
+CONTESTED
+UNVERIFIED
+FALSE
+MISLEADING
+The platform must distinguish:
+Incorrect Information
+Intentional Disinformation
+Political Narrative
+Unverified Rumour
+Intent should not be asserted without evidence.
+
+17. Exposure Intelligence
+Exposure analysis combines:
+Situation
++
+Entity Graph
++
+Customer Profile
++
+Geography
++
+Asset Relationships
+Example:
+Situation:
+Port Disruption
+
+Customer:
+Mining Company
+
+Relationship:
+Mine → Uses Port
+
+Result:
+DIRECT SUPPLY CHAIN EXPOSURE
+
+18. Recommendation Engine
+Recommendations should be generated using:
+Situation
++
+Customer Role
++
+Exposure
++
+Severity
++
+Time Horizon
+The recommendation engine must explain:
+Why this action is recommended.
+Example:
+Recommended action: Review supply-chain contingency plans.
+Reason: The situation affects a port used by two suppliers linked to your operational profile.
+
+19. Model Governance
+Every AI-generated conclusion should have:
+Model Version
+Confidence
+Evidence
+Timestamp
+Human Review Status
+The system should support:
+Model Monitoring
+Drift Detection
+Evaluation Sets
+Human Feedback
+Error Analysis
+
+20. Human-in-the-Loop
+The platform should use humans where AI uncertainty or risk is high.
+AI
+ ↓
+Confidence
+ ↓
+Risk Threshold
+ ├── High Confidence / Low Risk → Automated
+ ├── Medium Confidence → Review Queue
+ └── Low Confidence / High Risk → Mandatory Review
+This creates a scalable intelligence operation.

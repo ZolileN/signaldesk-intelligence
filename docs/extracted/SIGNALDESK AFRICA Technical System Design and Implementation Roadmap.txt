@@ -1,0 +1,539 @@
+
+SIGNALDESK AFRICA
+Technical System Design and Implementation Roadmap
+Version: 1.0
+
+PART I: TECHNICAL SYSTEM DESIGN
+1. Architectural Principles
+SignalDesk should be:
+Event-driven.
+Asynchronous.
+Modular.
+Source-agnostic.
+Evidence-preserving.
+Multilingual.
+API-first.
+Horizontally scalable.
+The architecture should allow new sensors to be added without redesigning the intelligence core.
+
+2. High-Level Architecture
+┌───────────────────────────────────────────────┐
+│                 DATA SOURCES                  │
+├───────────────────────────────────────────────┤
+│ VectaNews │ Radio │ Social │ Government       │
+│ Corporate │ Open Data │ Customer Data         │
+└───────────────────────┬───────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────┐
+│                INGESTION LAYER                │
+├───────────────────────────────────────────────┤
+│ API │ RSS │ Crawlers │ Stream Capture         │
+│ Document Upload │ Connectors                   │
+└───────────────────────┬───────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────┐
+│              MESSAGE / QUEUE LAYER            │
+├───────────────────────────────────────────────┤
+│ Event Queue │ Processing Queue │ Retry Queue   │
+└───────────────────────┬───────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────┐
+│             PROCESSING PIPELINE               │
+├───────────────────────────────────────────────┤
+│ Cleaning │ Deduplication │ Language           │
+│ Classification │ NER │ Claims │ Transcription │
+└───────────────────────┬───────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────┐
+│              INTELLIGENCE CORE               │
+├───────────────────────────────────────────────┤
+│ Event Engine │ Entity Resolution              │
+│ Knowledge Graph │ Situation Engine            │
+│ Trajectory │ Causality │ Forecasting          │
+└───────────────────────┬───────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────┐
+│              EXPOSURE ENGINE                 │
+├───────────────────────────────────────────────┤
+│ Customer Profiles │ Assets │ Relationships    │
+│ Exposure │ Impact │ Recommendations            │
+└───────────────────────┬───────────────────────┘
+                        ▼
+┌───────────────────────────────────────────────┐
+│                DELIVERY LAYER                 │
+├───────────────────────────────────────────────┤
+│ Dashboard │ Alerts │ Reports │ API            │
+│ Email │ Messaging │ Integrations              │
+└───────────────────────────────────────────────┘
+
+3. Recommended Technology Architecture
+The initial platform can use:
+Frontend:
+React / Next.js
+
+Backend:
+Python
+
+API:
+FastAPI
+
+Primary Database:
+PostgreSQL
+
+Vector Search:
+pgvector initially
+
+Graph:
+PostgreSQL graph-style relationships initially
+Dedicated graph database later if justified
+
+Queue:
+Redis + BullMQ
+or
+SQS
+
+Object Storage:
+S3-compatible storage
+
+Audio Processing:
+FFmpeg
+
+Speech-to-Text:
+Multilingual ASR provider/model
+
+ML:
+Python
+PyTorch
+Transformers
+scikit-learn
+
+Deployment:
+AWS / managed cloud infrastructure
+The architecture should avoid premature microservices.
+A modular monolith is appropriate for the early platform.
+
+4. Service Boundaries
+Initial services:
+Source Service
+Ingestion Service
+Processing Service
+Entity Service
+Event Service
+Situation Service
+Exposure Service
+Alert Service
+API Service
+They can initially run as modular components in one codebase.
+Later:
+INGESTION
+PROCESSING
+INTELLIGENCE
+EXPOSURE
+DELIVERY
+can become independently scalable services.
+
+5. Radio Sensor Architecture
+Radio Station Registry
+        ↓
+Stream Health Monitor
+        ↓
+Programme Schedule
+        ↓
+Listening Scheduler
+        ↓
+Stream Capture
+        ↓
+Audio Buffer
+        ↓
+Segmenter
+        ↓
+Audio Classifier
+        ↓
+Speech-to-Text
+        ↓
+Transcript
+        ↓
+Intelligence Pipeline
+The system should prioritise:
+News Bulletins
+Talk Shows
+Interviews
+Political Programming
+Emergency Broadcasts
+and deprioritise:
+Music
+Advertising
+Routine Entertainment
+The system should not treat radio as a music-recognition problem.
+It is a broadcast intelligence problem.
+
+6. VectaNews Integration
+VectaNews should expose a standard event interface:
+POST /observations
+or publish to an event bus:
+ObservationCreated
+SignalDesk then processes:
+Observation
+    ↓
+Claims
+    ↓
+Entities
+    ↓
+Events
+    ↓
+Situations
+The key principle:
+VectaNews should remain a specialised source intelligence system, while SignalDesk remains the canonical intelligence layer.
+
+7. Event-Driven Architecture
+Example:
+ArticleCollected
+       ↓
+ObservationCreated
+       ↓
+ContentProcessed
+       ↓
+EntitiesExtracted
+       ↓
+ClaimExtracted
+       ↓
+EventDetected
+       ↓
+EventClusterUpdated
+       ↓
+SituationUpdated
+       ↓
+ExposureRecalculated
+       ↓
+AlertEvaluated
+Each step can be retried independently.
+
+8. Data Storage
+PostgreSQL
+Stores:
+Users.
+Customers.
+Sources.
+Observations.
+Claims.
+Entities.
+Events.
+Situations.
+Exposures.
+Alerts.
+Object Storage
+Stores:
+Audio.
+Original documents.
+Transcripts.
+Evidence files.
+Vector Database
+Stores:
+Embeddings.
+Semantic search representations.
+Similarity relationships.
+Graph Representation
+Initially:
+entity_relationships
+event_relationships
+situation_relationships
+within PostgreSQL.
+A dedicated graph database can be introduced later.
+
+9. Security
+The platform should support:
+Tenant Isolation
+Role-Based Access Control
+Encryption
+Audit Logs
+Data Retention
+Source Access Controls
+Enterprise customers may require:
+Private Workspaces
+SSO
+SCIM
+Custom Retention
+Private Deployment
+
+10. API Layer
+Core APIs:
+GET /sources
+GET /observations
+GET /claims
+GET /entities
+GET /events
+GET /situations
+GET /alerts
+GET /exposure
+GET /recommendations
+Future:
+POST /customer/assets
+POST /customer/watchlists
+POST /customer/rules
+
+PART II: IMPLEMENTATION ROADMAP
+Phase 0: Intelligence Model
+Objective
+Freeze the conceptual architecture.
+Deliverables:
+Canonical Schema
+Event Ontology
+Situation Ontology
+Confidence Model
+Trajectory Model
+Exposure Model
+This phase must happen before extensive feature development.
+
+Phase 1: Foundational Intelligence Engine
+Objective
+Build the core platform without attempting to monitor everything.
+Build:
+Source Registry
+Observation Model
+Entity Model
+Claim Model
+Event Model
+Situation Model
+Evidence Model
+Initial interface:
+Observation
+    ↓
+Event
+    ↓
+Situation
+
+Phase 2: VectaNews Integration
+Objective
+Create the first reliable high-volume intelligence sensor.
+Build:
+News Collection
+Article Processing
+Deduplication
+NER
+Claim Extraction
+Event Detection
+Event Clustering
+Initial output:
+News
+    ↓
+Events
+    ↓
+Situations
+
+Phase 3: Situation Intelligence
+Objective
+Make the product answer the eight questions.
+Build:
+Situation Dashboard
+Trajectory
+Actors
+Drivers
+Geography
+Evidence
+Potential Outcomes
+At this point, SignalDesk begins becoming a real product rather than an ingestion system.
+
+Phase 4: Radio Sensor Network
+Objective
+Add African broadcast intelligence.
+Build:
+Station Registry
+Stream Monitoring
+Programming Schedules
+News Detection
+Audio Segmentation
+ASR
+Transcript Processing
+Event Detection
+Start with a controlled number of stations.
+Do not attempt continent-wide coverage immediately.
+
+Phase 5: Exposure Engine
+Objective
+Move from general intelligence to customer-specific intelligence.
+Build:
+Customer Profile
+Asset Registry
+Geographic Exposure
+Entity Relationships
+Situation Matching
+Impact Assessment
+Example:
+Situation
+    ↓
+Mine Location
+    ↓
+Customer Asset
+    ↓
+Operational Exposure
+
+Phase 6: Alerting and Recommendations
+Objective
+Turn intelligence into action.
+Build:
+Alert Rules
+Severity
+Urgency
+Exposure
+Recommendation Engine
+The platform should produce:
+This is happening. It affects you. This is why. This is what you should consider doing.
+
+Phase 7: Historical Intelligence
+Objective
+Create the long-term data moat.
+Build:
+Historical Situation Archive
+Comparable Situation Search
+Outcome Tracking
+Trajectory History
+This enables:
+“Show me similar situations and what happened next.”
+
+Phase 8: Predictive Intelligence
+Objective
+Introduce forecasting.
+Build:
+Scenario Generation
+Historical Comparables
+Trajectory Forecasting
+Outcome Prediction
+The system should initially present:
+Possible Outcomes
+Likelihood
+Time Horizon
+Confidence
+Evidence
+rather than pretending to provide certainty.
+
+Phase 9: Enterprise Platform
+Build:
+SSO
+RBAC
+API
+Webhooks
+Custom Watchlists
+Custom Alerts
+Private Data
+Integrations
+Potential integrations:
+ERP
+CRM
+Risk Platforms
+Security Systems
+Investment Platforms
+
+Phase 10: African Intelligence Graph
+Long-term objective:
+African People
+African Companies
+African Governments
+African Locations
+African Events
+African Situations
+African Outcomes
+The result becomes:
+A continuously updated intelligence graph of Africa.
+
+11. MVP Definition
+The MVP should not attempt to build the complete vision.
+The MVP should prove one thing:
+Can SignalDesk convert fragmented information into useful, evidence-backed situation intelligence?
+The MVP should include:
+VectaNews
+    ↓
+Observation
+    ↓
+Entity Extraction
+    ↓
+Claim Extraction
+    ↓
+Event Detection
+    ↓
+Event Clustering
+    ↓
+Situation Detection
+    ↓
+Eight-Question Situation View
+The MVP should focus on one or two verticals.
+Recommended initial verticals:
+Mining
+Investors
+Corporate Communications
+because these customers have:
+High exposure to external events.
+Existing intelligence budgets.
+Clear financial consequences.
+Strong need for early warning.
+
+12. Build Order
+The correct order is:
+1. Canonical Data Model
+        ↓
+2. Event/Situation Ontology
+        ↓
+3. Observation Ingestion
+        ↓
+4. Entity and Claim Extraction
+        ↓
+5. Event Detection
+        ↓
+6. Event Clustering
+        ↓
+7. Situation Engine
+        ↓
+8. Eight-Question Interface
+        ↓
+9. Exposure Engine
+        ↓
+10. Alerting
+        ↓
+11. Recommendations
+        ↓
+12. Radio Sensor Expansion
+        ↓
+13. Predictive Intelligence
+The critical mistake would be building the radio network first and discovering later that the intelligence core cannot properly structure what it hears.
+
+13. Final Architecture
+The complete SignalDesk platform is:
+                WORLD
+                  │
+       ┌──────────┴──────────┐
+       │                     │
+     NEWS                  RADIO
+       │                     │
+     SOCIAL              GOVERNMENT
+       │                     │
+    CORPORATE             OPEN DATA
+       │                     │
+       └──────────┬──────────┘
+                  ▼
+           OBSERVATIONS
+                  ▼
+              CLAIMS
+                  ▼
+              ENTITIES
+                  ▼
+                EVENTS
+                  ▼
+          EVENT RELATIONSHIPS
+                  ▼
+              SITUATIONS
+                  ▼
+              TRAJECTORY
+                  ▼
+                DRIVERS
+                  ▼
+              FORECASTS
+                  ▼
+              CUSTOMER EXPOSURE
+                  ▼
+                IMPACT
+                  ▼
+              RECOMMENDATIONS
+                  ▼
+                ACTION
+The product should be built in this order:
+First understand the world. Then understand situations. Then understand the customer. Then recommend action.
+That is the technical and strategic sequence for SignalDesk Africa.
