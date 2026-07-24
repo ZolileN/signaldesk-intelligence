@@ -132,6 +132,27 @@ def crawl_and_ingest_outlet(outlet_id: str):
         })
     return {"status": "SUCCESS", "crawled": len(results), "results": results}
 
+@app.post("/api/v1/news/crawl-all")
+def crawl_all_outlets():
+    results = []
+    # Loop through all outlets but limit to 1 article each to prevent hitting free-tier limits or timing out
+    for outlet in vectanews_scraper_instance.outlets:
+        try:
+            articles = vectanews_scraper_instance.crawl_outlet(outlet["id"], limit=1)
+            for article in articles:
+                obs = ingestion_service_instance.ingest_vectanews_article(article)
+                sit = situation_service_instance.process_observation_to_situation(obs["id"])
+                results.append({
+                    "observation_id": obs["id"],
+                    "headline": article["headline"],
+                    "situation_id": sit["id"] if sit else None
+                })
+        except Exception as e:
+            # Skip outlets that fail to crawl
+            continue
+            
+    return {"status": "SUCCESS", "crawled": len(results), "results": results}
+
 
 @app.post("/api/v1/search/vector")
 def vector_search_situations(payload: Dict[str, Any]):
