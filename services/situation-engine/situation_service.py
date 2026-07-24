@@ -186,21 +186,21 @@ class SituationEngineService:
             "trajectory_analysis": {
                 "direction": latest_traj["trajectory"],
                 "trajectory_score": latest_traj.get("trajectory_score", 0.78),
-                "explanation": latest_traj.get("explanation", ""),
+                "explanation": latest_traj.get("explanation", "Trajectory based on initial event velocity."),
                 "metrics": {
-                    "event_frequency_delta": "+150%",
+                    "event_frequency_delta": "N/A",
                     "actor_expansion_count": len(entities_list),
-                    "geographic_spread": "1 Municipality, 2 Mine Access Gates",
+                    "geographic_spread": "N/A",
                     "severity_level": sit.get("severity", "HIGH")
                 }
             },
 
             # 3. WHERE IS IT HAPPENING?
             "where_is_it_happening": sit.get("geographic_scope", {
-                "country": "South Africa",
-                "province": "North West",
-                "municipality": "Rustenburg Local Municipality",
-                "coordinates": {"lat": -25.6667, "lng": 27.2417}
+                "country": "Unknown",
+                "province": "Unknown",
+                "municipality": "Unknown",
+                "coordinates": {"lat": 0, "lng": 0}
             }),
 
             # 4. WHO IS INVOLVED?
@@ -211,13 +211,13 @@ class SituationEngineService:
                 "immediate_triggers": [d["description"] for d in sit.get("drivers", []) if d.get("category") == "IMMEDIATE_TRIGGER"],
                 "structural_drivers": [d["description"] for d in sit.get("drivers", []) if d.get("category") == "STRUCTURAL_DRIVER"],
                 "economic_drivers": [d["description"] for d in sit.get("drivers", []) if d.get("category") == "ECONOMIC_DRIVER"],
-                "analytical_hypotheses": ["Pre-election political mobilization exacerbating local mining community grievances."]
+                "analytical_hypotheses": []
             },
 
             # 6. WHAT HAPPENS NEXT?
             "what_happens_next": {
-                "observed_facts": ["Access road is currently blocked by community members."],
-                "analytical_inferences": ["High risk of night shift transport disruption if municipal talks stall."],
+                "observed_facts": [sit.get("summary", "")],
+                "analytical_inferences": [],
                 "scenarios": sit.get("potential_outcomes", []),
                 "historical_comparables": comparables
             },
