@@ -39,7 +39,7 @@ import {
   Home
 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // ─── SVG Line Chart Component (Signal Activity / 14-Day History) ────────────
 function LineChart({ data, width = 680, height = 200, showTooltip = true, line1Color = '#00e5ff', line2Color = '#f97316', line1Label = 'Signals', line2Label = 'Events', thresholdLine = null, defaultActiveLabel = null }) {
